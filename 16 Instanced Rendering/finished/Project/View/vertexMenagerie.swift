@@ -21,6 +21,8 @@ class vertexMenagerie {
         
         data.append(contentsOf: mesh.buffer)
         offset += vertexCounts[meshType]!
+        
+        //print(firstVertices)
     }
     
     func finalize(device: MTLDevice) {

@@ -13,6 +13,7 @@ class GameScene : ObservableObject {
     @Published var player: Camera
     @Published var renderables: [Int32:[Entity]]
     @Published var firstInstances: [Int32:Int]
+    //@Published var firstInstancesFlat: [Int]
     @Published var instanceCounts: [Int32:Int]
     var mouse: Billboard
     @Published var sun: Light
@@ -32,6 +33,7 @@ class GameScene : ObservableObject {
         renderables = [:];
         firstInstances = [:];
         instanceCounts = [:];
+        //firstInstancesFlat = [];
         
         player = Camera(position: [-6.0, 6.0, 4.0], eulers: [0.0, -15.0, -45.0], id: OBJECT_TYPE_PLAYER);
         
@@ -74,11 +76,6 @@ class GameScene : ObservableObject {
         
         var offset = 0;
         
-        renderables[OBJECT_TYPE_MOUSE] = [mouse];
-        firstInstances[OBJECT_TYPE_MOUSE] = offset;
-        instanceCounts[OBJECT_TYPE_MOUSE] = renderables[OBJECT_TYPE_MOUSE]?.count;
-        offset += instanceCounts[OBJECT_TYPE_MOUSE]!;
-        
         renderables[OBJECT_TYPE_CUBE] = [];
         firstInstances[OBJECT_TYPE_CUBE] = offset;
         for cube in cubes {
@@ -95,6 +92,11 @@ class GameScene : ObservableObject {
         instanceCounts[OBJECT_TYPE_GROUND] = renderables[OBJECT_TYPE_GROUND]?.count;
         offset += instanceCounts[OBJECT_TYPE_GROUND]!;
         
+        renderables[OBJECT_TYPE_MOUSE] = [mouse];
+        firstInstances[OBJECT_TYPE_MOUSE] = offset;
+        instanceCounts[OBJECT_TYPE_MOUSE] = renderables[OBJECT_TYPE_MOUSE]?.count;
+        offset += instanceCounts[OBJECT_TYPE_MOUSE]!;
+        
         renderables[OBJECT_TYPE_POINT_LIGHT] = [];
         firstInstances[OBJECT_TYPE_POINT_LIGHT] = offset;
         for light in pointLights {
@@ -102,6 +104,8 @@ class GameScene : ObservableObject {
         }
         instanceCounts[OBJECT_TYPE_POINT_LIGHT] = renderables[OBJECT_TYPE_POINT_LIGHT]?.count;
         offset += instanceCounts[OBJECT_TYPE_POINT_LIGHT]!;
+        
+        //firstInstancesFlat = firstInstances.sorted(by: { $0.0 < $1.0 });
     }
     
     func updateView() {

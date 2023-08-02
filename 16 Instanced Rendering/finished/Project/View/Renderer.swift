@@ -38,8 +38,8 @@ class Renderer: NSObject, MTKViewDelegate {
         self.materialLoader = MTKTextureLoader(device: metalDevice)
         
         menagerie = vertexMenagerie();
-        menagerie.consume(mesh: ObjMesh(filename: "ground"), meshType: OBJECT_TYPE_GROUND);
         menagerie.consume(mesh: ObjMesh(filename: "cube"), meshType: OBJECT_TYPE_CUBE);
+        menagerie.consume(mesh: ObjMesh(filename: "ground"), meshType: OBJECT_TYPE_GROUND);
         menagerie.consume(mesh: ObjMesh(filename: "mouse"), meshType: OBJECT_TYPE_MOUSE);
         menagerie.consume(mesh: ObjMesh(filename: "light"), meshType: OBJECT_TYPE_POINT_LIGHT);
         menagerie.finalize(device: metalDevice);
@@ -126,16 +126,15 @@ class Renderer: NSObject, MTKViewDelegate {
     func prepare_scene() -> MTLBuffer {
         
         var payloads: [InstancePayload] = []
-        for (_, instances) in scene.renderables {
-            for instance in instances {
-                
+        
+        for type in [OBJECT_TYPE_CUBE, OBJECT_TYPE_GROUND, OBJECT_TYPE_MOUSE, OBJECT_TYPE_POINT_LIGHT] {
+            for instance in scene.renderables[type]! {
                 payloads.append(
                     InstancePayload(
                         model: instance.get_model_transform(),
-                        color_texID: simd_float4(instance.color, Float(instance.id)))
-                )
+                        color_texID: simd_float4(instance.color, Float(instance.id))))
+                
             }
-            
         }
         
         var memory: UnsafeMutableRawPointer? = nil
@@ -284,7 +283,18 @@ class Renderer: NSObject, MTKViewDelegate {
     func draw(
         renderEncoder: MTLRenderCommandEncoder?,
         meshType: Int32) {
-            
+        
+            /*
+        print("First Vertices: {}", menagerie.firstVertices)
+        print("Vertex Counts: {}", menagerie.vertexCounts)
+        print("Instance Counts: {}", scene.instanceCounts)
+        print("First Instances: {}", scene.firstInstances)
+        print("Requested mesh type: {}", meshType)
+        print("First vertex: {}", Int(menagerie.firstVertices[meshType]!))
+        print(Int(menagerie.vertexCounts[meshType]!))
+        print(scene.instanceCounts[meshType]!)
+        print(scene.firstInstances[meshType]!)
+            */
         renderEncoder?.drawPrimitives(
             type: .triangle,
             vertexStart: Int(menagerie.firstVertices[meshType]!),
