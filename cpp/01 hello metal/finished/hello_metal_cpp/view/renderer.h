@@ -4,8 +4,8 @@
 //
 //  Created by Andrew Mengede on 15/9/2023.
 //
-
 #pragma once
+
 #include "../config.h"
 
 class Renderer

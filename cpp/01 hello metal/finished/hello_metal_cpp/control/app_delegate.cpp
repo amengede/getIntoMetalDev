@@ -4,8 +4,8 @@
 //
 //  Created by Andrew Mengede on 13/9/2023.
 //
-
 #include "app_delegate.h"
+
 AppDelegate::~AppDelegate()
 {
     mtkView->release();

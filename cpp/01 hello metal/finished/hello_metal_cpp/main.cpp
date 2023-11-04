@@ -4,7 +4,6 @@
 //
 //  Created by Andrew Mengede on 15/9/2023.
 //
-
 #include "config.h"
 #include "control/app_delegate.h"
 

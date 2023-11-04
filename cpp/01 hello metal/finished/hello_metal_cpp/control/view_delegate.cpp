@@ -4,7 +4,6 @@
 //
 //  Created by Andrew Mengede on 13/9/2023.
 //
-
 #include "view_delegate.h"
 
 ViewDelegate::ViewDelegate(MTL::Device* device)
