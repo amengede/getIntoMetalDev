@@ -12,11 +12,11 @@
 class Renderer
 {
     public:
-        Renderer(MTL::Device* device);
+        explicit Renderer(MTL::Device* device);
 
         void draw(MTK::View* view);
 
     private:
-        release_ptr<MTL::Device> device;
-        release_ptr<MTL::CommandQueue> commandQueue;
+        const release_ptr<MTL::Device> device;
+        const release_ptr<MTL::CommandQueue> commandQueue;
 };
