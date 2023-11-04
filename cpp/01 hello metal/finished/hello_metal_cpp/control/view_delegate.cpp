@@ -9,14 +9,8 @@
 
 ViewDelegate::ViewDelegate(MTL::Device* device)
 : MTK::ViewDelegate()
-, renderer(new Renderer(device))
-{
-}
-
-ViewDelegate::~ViewDelegate()
-{
-    delete renderer;
-}
+, renderer(std::make_unique<Renderer>(device))
+{}
 
 void ViewDelegate::drawInMTKView(MTK::View* view)
 {

@@ -5,6 +5,9 @@
 //  Created by Andrew Mengede on 13/9/2023.
 //
 #pragma once
+
+#include <memory>
+
 #include "../config.h"
 #include "view_delegate.h"
 
@@ -21,5 +24,5 @@ class AppDelegate : public NS::ApplicationDelegate
         NS::Window* window;
         MTK::View* mtkView;
         MTL::Device* device;
-        ViewDelegate* viewDelegate = nullptr;
+        std::unique_ptr<ViewDelegate> viewDelegate;
 };

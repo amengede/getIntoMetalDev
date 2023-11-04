@@ -11,7 +11,6 @@ AppDelegate::~AppDelegate()
     mtkView->release();
     window->release();
     device->release();
-    delete viewDelegate;
 }
 
 void AppDelegate::applicationWillFinishLaunching(NS::Notification* notification)
@@ -36,8 +35,8 @@ void AppDelegate::applicationDidFinishLaunching(NS::Notification* notification)
     mtkView->setColorPixelFormat(MTL::PixelFormat::PixelFormatBGRA8Unorm_sRGB);
     mtkView->setClearColor(MTL::ClearColor::Make(1.0, 1.0, 0.6, 1.0));
 
-    viewDelegate = new ViewDelegate(device);
-    mtkView->setDelegate(viewDelegate);
+    viewDelegate = std::make_unique<ViewDelegate>(device);
+    mtkView->setDelegate(viewDelegate.get());
 
     window->setContentView(mtkView);
     window->setTitle(NS::String::string("Window", NS::StringEncoding::UTF8StringEncoding));
