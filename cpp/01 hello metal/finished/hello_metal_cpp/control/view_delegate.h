@@ -16,7 +16,7 @@ class ViewDelegate : public MTK::ViewDelegate
     public:
         ViewDelegate(MTL::Device* device);
 
-        virtual void drawInMTKView(MTK::View* view) override;
+        void drawInMTKView(MTK::View* view) override;
 
     private:
         const std::unique_ptr<Renderer> renderer;
