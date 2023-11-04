@@ -6,13 +6,6 @@
 //
 #include "app_delegate.h"
 
-AppDelegate::~AppDelegate()
-{
-    mtkView->release();
-    window->release();
-    device->release();
-}
-
 void AppDelegate::applicationWillFinishLaunching(NS::Notification* notification)
 {
     NS::Application* app = reinterpret_cast<NS::Application*>(notification->object());
@@ -23,22 +16,22 @@ void AppDelegate::applicationDidFinishLaunching(NS::Notification* notification)
 {
     CGRect frame = (CGRect){ {100.0, 100.0}, {640.0, 480.0} };
 
-    window = NS::Window::alloc()->init(
+    window.reset(NS::Window::alloc()->init(
         frame,
         NS::WindowStyleMaskClosable|NS::WindowStyleMaskTitled,
         NS::BackingStoreBuffered,
-        false);
+        false));
 
-    device = MTL::CreateSystemDefaultDevice();
+    device.reset(MTL::CreateSystemDefaultDevice());
 
-    mtkView = MTK::View::alloc()->init(frame, device);
+    mtkView.reset(MTK::View::alloc()->init(frame, device.get()));
     mtkView->setColorPixelFormat(MTL::PixelFormat::PixelFormatBGRA8Unorm_sRGB);
     mtkView->setClearColor(MTL::ClearColor::Make(1.0, 1.0, 0.6, 1.0));
 
-    viewDelegate = std::make_unique<ViewDelegate>(device);
+    viewDelegate = std::make_unique<ViewDelegate>(device.get());
     mtkView->setDelegate(viewDelegate.get());
 
-    window->setContentView(mtkView);
+    window->setContentView(mtkView.get());
     window->setTitle(NS::String::string("Window", NS::StringEncoding::UTF8StringEncoding));
     window->makeKeyAndOrderFront(nullptr);
 

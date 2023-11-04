@@ -9,20 +9,19 @@
 #include <memory>
 
 #include "../config.h"
+#include "../release.h"
 #include "view_delegate.h"
 
 class AppDelegate : public NS::ApplicationDelegate
 {
     public:
-        ~AppDelegate();
-
         virtual void applicationWillFinishLaunching(NS::Notification* notification) override;
         virtual void applicationDidFinishLaunching(NS::Notification* notification) override;
         virtual bool applicationShouldTerminateAfterLastWindowClosed(NS::Application* sender) override;
 
     private:
-        NS::Window* window;
-        MTK::View* mtkView;
-        MTL::Device* device;
+        release_ptr<NS::Window> window;
+        release_ptr<MTK::View> mtkView;
+        release_ptr<MTL::Device> device;
         std::unique_ptr<ViewDelegate> viewDelegate;
 };
