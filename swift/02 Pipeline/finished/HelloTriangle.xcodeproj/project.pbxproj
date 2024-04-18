@@ -7,23 +7,23 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		762C574F2BD0A6F600EA66D1 /* PipelineBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 762C574E2BD0A6F600EA66D1 /* PipelineBuilder.swift */; };
 		76B9482927CB8F9B0087E986 /* HelloTriangleApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76B9482827CB8F9B0087E986 /* HelloTriangleApp.swift */; };
 		76B9482B27CB8F9B0087E986 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76B9482A27CB8F9B0087E986 /* ContentView.swift */; };
 		76B9482D27CB8F9C0087E986 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 76B9482C27CB8F9C0087E986 /* Assets.xcassets */; };
 		76B9483027CB8F9C0087E986 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 76B9482F27CB8F9C0087E986 /* Preview Assets.xcassets */; };
 		76B9483727CB90420087E986 /* Renderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76B9483627CB90420087E986 /* Renderer.swift */; };
+		76DA46C42BD0DC4500E22CE8 /* PipelineBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76DA46C32BD0DC4500E22CE8 /* PipelineBuilder.swift */; };
 		76EE0A762BD0A19A009BB738 /* shaders.metal in Sources */ = {isa = PBXBuildFile; fileRef = 76EE0A752BD0A19A009BB738 /* shaders.metal */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		762C574E2BD0A6F600EA66D1 /* PipelineBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PipelineBuilder.swift; sourceTree = "<group>"; };
 		76B9482527CB8F9B0087E986 /* HelloTriangle.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = HelloTriangle.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		76B9482827CB8F9B0087E986 /* HelloTriangleApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HelloTriangleApp.swift; sourceTree = "<group>"; };
 		76B9482A27CB8F9B0087E986 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		76B9482C27CB8F9C0087E986 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		76B9482F27CB8F9C0087E986 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		76B9483627CB90420087E986 /* Renderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Renderer.swift; sourceTree = "<group>"; };
+		76DA46C32BD0DC4500E22CE8 /* PipelineBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PipelineBuilder.swift; sourceTree = "<group>"; };
 		76EE0A752BD0A19A009BB738 /* shaders.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = shaders.metal; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -57,13 +57,13 @@
 		76B9482727CB8F9B0087E986 /* HelloTriangle */ = {
 			isa = PBXGroup;
 			children = (
-				762C574E2BD0A6F600EA66D1 /* PipelineBuilder.swift */,
 				76B9482827CB8F9B0087E986 /* HelloTriangleApp.swift */,
 				76B9482A27CB8F9B0087E986 /* ContentView.swift */,
 				76B9483627CB90420087E986 /* Renderer.swift */,
 				76B9482C27CB8F9C0087E986 /* Assets.xcassets */,
 				76B9482E27CB8F9C0087E986 /* Preview Content */,
 				76EE0A752BD0A19A009BB738 /* shaders.metal */,
+				76DA46C32BD0DC4500E22CE8 /* PipelineBuilder.swift */,
 			);
 			path = HelloTriangle;
 			sourceTree = "<group>";
@@ -150,7 +150,7 @@
 				76B9482B27CB8F9B0087E986 /* ContentView.swift in Sources */,
 				76B9483727CB90420087E986 /* Renderer.swift in Sources */,
 				76B9482927CB8F9B0087E986 /* HelloTriangleApp.swift in Sources */,
-				762C574F2BD0A6F600EA66D1 /* PipelineBuilder.swift in Sources */,
+				76DA46C42BD0DC4500E22CE8 /* PipelineBuilder.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

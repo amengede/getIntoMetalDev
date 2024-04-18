@@ -22,7 +22,7 @@ class Renderer: NSObject, MTKViewDelegate {
         }
         self.commandQueue = device.makeCommandQueue()
         
-        self.pipeline = build_pipeline(device: device, vertexEntry: "vertexEntry", fragmentEntry: "fragmentEntry")
+        pipeline = build_pipeline(device: device)
         
         super.init()
     }
@@ -48,6 +48,7 @@ class Renderer: NSObject, MTKViewDelegate {
             .makeRenderCommandEncoder(descriptor: renderPassDescriptor!)!
         
         renderEncoder.setRenderPipelineState(pipeline)
+        
         renderEncoder.drawPrimitives(type: .triangle, vertexStart: 0, vertexCount: 3)
         
         renderEncoder.endEncoding()
