@@ -12,6 +12,7 @@ class Renderer: NSObject, MTKViewDelegate {
     var parent: ContentView
     var device: MTLDevice!
     var commandQueue: MTLCommandQueue!
+    var pipeline: MTLRenderPipelineState
     
     init(_ parent: ContentView) {
         
@@ -20,6 +21,8 @@ class Renderer: NSObject, MTKViewDelegate {
             self.device = device
         }
         self.commandQueue = device.makeCommandQueue()
+        
+        self.pipeline = build_pipeline(device: device, vertexEntry: "vertexEntry", fragmentEntry: "fragmentEntry")
         
         super.init()
     }
@@ -36,13 +39,16 @@ class Renderer: NSObject, MTKViewDelegate {
         
         let commandBuffer = commandQueue.makeCommandBuffer()!
         
-        let renderPassDescriptor = view.currentRenderPassDescriptor!
-        renderPassDescriptor.colorAttachments[0].clearColor = MTLClearColorMake(0, 0.5, 0.5, 1.0)
-        renderPassDescriptor.colorAttachments[0].loadAction = .clear
-        renderPassDescriptor.colorAttachments[0].storeAction = .store
+        let renderPassDescriptor = view.currentRenderPassDescriptor
+        renderPassDescriptor?.colorAttachments[0].clearColor = MTLClearColorMake(0, 0.5, 0.5, 1.0)
+        renderPassDescriptor?.colorAttachments[0].loadAction = .clear
+        renderPassDescriptor?.colorAttachments[0].storeAction = .store
         
         let renderEncoder = commandBuffer
-            .makeRenderCommandEncoder(descriptor: renderPassDescriptor)!
+            .makeRenderCommandEncoder(descriptor: renderPassDescriptor!)!
+        
+        renderEncoder.setRenderPipelineState(pipeline)
+        renderEncoder.drawPrimitives(type: .triangle, vertexStart: 0, vertexCount: 3)
         
         renderEncoder.endEncoding()
         
