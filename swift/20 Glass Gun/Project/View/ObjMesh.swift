@@ -14,9 +14,10 @@ class ObjMesh {
     var normals: [simd_float3] = []
     var cursor: Int
     
-    init(filename: String) {
+    init?(filename: String) {
         guard let meshURL = Bundle.main.url(forResource: filename, withExtension: "obj") else {
-            fatalError()
+            print("[Error] failed to create mesh URL")
+            return nil
         }
         
         do {
@@ -54,7 +55,8 @@ class ObjMesh {
             
         }
         catch {
-            fatalError("Couldn't load \(filename)")
+            print("Couldn't load \(filename)")
+            return nil
         }
     }
     

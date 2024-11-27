@@ -48,7 +48,10 @@ class Renderer: NSObject, MTKViewDelegate {
         ]
         
         for (objectType, modelName) in modelInfo {
-            menagerie.consume(mesh: ObjMesh(filename: modelName), meshType: objectType)
+            guard let mesh = ObjMesh(filename: modelName) else {
+                continue
+            }
+            menagerie.consume(mesh: mesh, meshType: objectType)
         }
         menagerie.finalize(device: metalDevice)
         
