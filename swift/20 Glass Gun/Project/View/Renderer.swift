@@ -188,7 +188,7 @@ class Renderer: NSObject, MTKViewDelegate {
         renderEncoder?.setVertexBuffer(menagerie.vertexBuffer, offset: 0, index: 0)
         renderEncoder?.setFragmentTexture(materialLump.texture, index: 0)
         renderEncoder?.setFragmentSamplerState(materialLump.sampler, index: 0)
-        renderEncoder?.setVertexBuffer(prepare_scene(), offset: 0, index: 1);
+        renderEncoder?.setVertexBuffer(prepareScene(), offset: 0, index: 1);
         
         sendCameraData(renderEncoder: renderEncoder)
         
@@ -202,7 +202,7 @@ class Renderer: NSObject, MTKViewDelegate {
         
     }
     
-    func prepare_scene() -> MTLBuffer {
+    func prepareScene() -> MTLBuffer? {
         
         var payloads: [InstancePayload] = []
         
@@ -238,7 +238,7 @@ class Renderer: NSObject, MTKViewDelegate {
         )
 
         free(memory)
-        return buffer!
+        return buffer
     }
     
     func sendCameraData(renderEncoder: MTLRenderCommandEncoder?) {
@@ -288,14 +288,20 @@ class Renderer: NSObject, MTKViewDelegate {
     func draw(
         renderEncoder: MTLRenderCommandEncoder?,
         meshType: Int32) {
-        
-        renderEncoder?.drawPrimitives(
+        guard let vertexStart = menagerie.firstVertices[meshType],
+              let vertexCount = menagerie.vertexCounts[meshType],
+              let instanceCount = scene.instanceCounts[meshType],
+              let baseInstance = scene.firstInstances[meshType],
+              let renderEncoder else {
+            return
+        }
+        renderEncoder.drawPrimitives(
             type: .triangle,
-            vertexStart: Int(menagerie.firstVertices[meshType]!),
-            vertexCount: Int(menagerie.vertexCounts[meshType]!),
-            instanceCount: scene.instanceCounts[meshType]!,
-            baseInstance: scene.firstInstances[meshType]!);
-        
+            vertexStart: Int(vertexStart),
+            vertexCount: Int(vertexCount),
+            instanceCount: instanceCount,
+            baseInstance: baseInstance
+        )
     }
     
     func drawGun(commandBuffer: MTLCommandBuffer) {
@@ -326,23 +332,28 @@ class Renderer: NSObject, MTKViewDelegate {
         var model = translation * yaw * pitch * scale;
         renderEncoder?.setVertexBytes(&model, length: MemoryLayout<float4x4>.stride, index: 1);
         
-        renderEncoder?.drawPrimitives(type: .triangle,
-                                      vertexStart: Int(menagerie.firstVertices[OBJECT_TYPE_GUN]!),
-                                      vertexCount: Int(menagerie.vertexCounts[OBJECT_TYPE_GUN]!))
-        
+        if let start = menagerie.firstVertices[OBJECT_TYPE_GUN],
+           let count = menagerie.vertexCounts[OBJECT_TYPE_GUN] {
+            renderEncoder?.drawPrimitives(type: .triangle,
+                                          vertexStart: Int(start),
+                                          vertexCount: Int(count))
+        }
         renderEncoder?.endEncoding()
     }
     
     func drawScreen(commandBuffer: MTLCommandBuffer, view: MTKView) {
         
-        let renderPassDescriptor = view.currentRenderPassDescriptor
-        renderPassDescriptor?.colorAttachments[0].loadAction = .clear
-        renderPassDescriptor?.colorAttachments[0].storeAction = .store
+        guard let renderPassDescriptor = view.currentRenderPassDescriptor,
+              let postPipeline = pipelines[PIPELINE_TYPE_POST] else {
+            return
+        }
+        renderPassDescriptor.colorAttachments[0].loadAction = .clear
+        renderPassDescriptor.colorAttachments[0].storeAction = .store
         
-        let renderEncoder = commandBuffer.makeRenderCommandEncoder(descriptor: renderPassDescriptor!)
+        let renderEncoder = commandBuffer.makeRenderCommandEncoder(descriptor: renderPassDescriptor)
         
         // World
-        renderEncoder?.setRenderPipelineState(pipelines[PIPELINE_TYPE_POST]!)
+        renderEncoder?.setRenderPipelineState(postPipeline)
         renderEncoder?.setFragmentTexture(worldLayer.colorBuffer, index: 0)
         renderEncoder?.setFragmentSamplerState(worldLayer.colorBufferSampler, index: 0)
         renderEncoder?.setVertexBuffer(screenQuad.vertexBuffer, offset: 0, index: 0)
