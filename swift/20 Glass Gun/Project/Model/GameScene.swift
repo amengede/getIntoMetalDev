@@ -67,44 +67,26 @@ class GameScene: ObservableObject {
         pointLights.append(BrightBillboard(position: [0.0, 0.0, 1.0], color: [0.0, 1.0, 1.0], rotation_center: [0.0, 0.0, 1.0], pathRadius: 2.0, pathPhi: 60.0, angularVelocity: 1.0, id: OBJECT_TYPE_POINT_LIGHT));
         pointLights.append(BrightBillboard(position: [0.0, 0.0, 1.0], color: [0.0, 0.0, 1.0], rotation_center: [0.0, 0.0, 1.0], pathRadius: 3.0, pathPhi: 0.0, angularVelocity: 2.0, id: OBJECT_TYPE_POINT_LIGHT));
         
-        capture_renderables();
+        captureRenderables();
         
     }
     
-    func capture_renderables() {
-        
-        var offset = 0;
-        
-        renderables[OBJECT_TYPE_CUBE] = [];
-        firstInstances[OBJECT_TYPE_CUBE] = offset;
-        for cube in cubes {
-            renderables[OBJECT_TYPE_CUBE]?.append(cube);
-        }
-        instanceCounts[OBJECT_TYPE_CUBE] = renderables[OBJECT_TYPE_CUBE]?.count;
-        offset += instanceCounts[OBJECT_TYPE_CUBE]!;
-        
-        renderables[OBJECT_TYPE_GROUND] = [];
-        firstInstances[OBJECT_TYPE_GROUND] = offset;
-        for tile in groundTiles {
-            renderables[OBJECT_TYPE_GROUND]?.append(tile)
-        }
-        instanceCounts[OBJECT_TYPE_GROUND] = renderables[OBJECT_TYPE_GROUND]?.count;
-        offset += instanceCounts[OBJECT_TYPE_GROUND]!;
-        
-        renderables[OBJECT_TYPE_MOUSE] = [mouse];
-        firstInstances[OBJECT_TYPE_MOUSE] = offset;
-        instanceCounts[OBJECT_TYPE_MOUSE] = renderables[OBJECT_TYPE_MOUSE]?.count;
-        offset += instanceCounts[OBJECT_TYPE_MOUSE]!;
-        
-        renderables[OBJECT_TYPE_POINT_LIGHT] = [];
-        firstInstances[OBJECT_TYPE_POINT_LIGHT] = offset;
-        for light in pointLights {
-            renderables[OBJECT_TYPE_POINT_LIGHT]?.append(light);
-        }
-        instanceCounts[OBJECT_TYPE_POINT_LIGHT] = renderables[OBJECT_TYPE_POINT_LIGHT]?.count;
-        offset += instanceCounts[OBJECT_TYPE_POINT_LIGHT]!;
-        
-        //firstInstancesFlat = firstInstances.sorted(by: { $0.0 < $1.0 });
+    private func captureRenderables() {
+        var offset = 0
+        captureRenderable(key: OBJECT_TYPE_CUBE, entities: cubes, offset: &offset)
+        captureRenderable(key: OBJECT_TYPE_GROUND, entities: groundTiles, offset: &offset)
+        captureRenderable(key: OBJECT_TYPE_MOUSE, entities: [mouse], offset: &offset)
+        captureRenderable(key: OBJECT_TYPE_POINT_LIGHT, entities: pointLights, offset: &offset)        
+        //firstInstancesFlat = firstInstances.sorted(by: { $0.0 < $1.0 })
+    }
+    
+    private func captureRenderable(key: Int32, entities: [Entity], offset: inout Int) {
+        renderables[key] = []
+        firstInstances[key] = offset
+        renderables[key]?.append(contentsOf: entities)
+        let count = renderables[key]?.count ?? 0
+        instanceCounts[key] = count
+        offset += count
     }
     
     func updateView() {
