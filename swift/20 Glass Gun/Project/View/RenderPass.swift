@@ -62,9 +62,9 @@ class RenderPass {
 fileprivate func createColorBuffer(_ device: MTLDevice, width: Int, height: Int) -> MTLTexture? {
     let colorBufferDescriptor = MTLTextureDescriptor()
     colorBufferDescriptor.textureType = .type2D
-    colorBufferDescriptor.width = width;
-    colorBufferDescriptor.height = height;
-    colorBufferDescriptor.pixelFormat = .bgra8Unorm;
+    colorBufferDescriptor.width = width
+    colorBufferDescriptor.height = height
+    colorBufferDescriptor.pixelFormat = .bgra8Unorm
     colorBufferDescriptor.usage = [.renderTarget, .shaderRead]
     colorBufferDescriptor.depth = 1
     colorBufferDescriptor.mipmapLevelCount = 1

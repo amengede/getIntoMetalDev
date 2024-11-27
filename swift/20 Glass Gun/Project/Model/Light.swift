@@ -41,8 +41,8 @@ class Light {
         self.type = SPOTLIGHT
         self.position = position
         self.eulers = eulers
-        self.t = 0.0;
-        self.eulerVelocity = eulerVelocity;
+        self.t = 0.0
+        self.eulerVelocity = eulerVelocity
     }
     
     func declarePointlight(

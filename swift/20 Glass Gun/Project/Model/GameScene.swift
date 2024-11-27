@@ -29,10 +29,10 @@ class GameScene: ObservableObject {
         cubes = []
         pointLights = []
         mouseDelta = Point2D(x: 0.0, y: 0.0)
-        renderables = [:];
-        firstInstances = [:];
-        instanceCounts = [:];
-        //firstInstancesFlat = [];
+        renderables = [:]
+        firstInstances = [:]
+        instanceCounts = [:]
+        //firstInstancesFlat = []
         
         player = Camera(position: [-6.0, 6.0, 4.0], eulers: [0.0, -15.0, -45.0], id: OBJECT_TYPE_PLAYER)
         
@@ -41,7 +41,7 @@ class GameScene: ObservableObject {
         
         let newSpotlight = Light(color: [1.0, 0.0, 0.0])
         newSpotlight.declareSpotlight(position: [-2, 0.0, 3.0], eulers: [0.0, 0.0, 180.0], eulerVelocity: [0.0, 0.0, 45.0])
-        spotlight = newSpotlight;
+        spotlight = newSpotlight
         
         let newSun = Light(color: [1.0, 1.0, 0.0])
         newSun.declareDirectional(eulers: [0.0, 135.0, 45.0])
@@ -64,10 +64,10 @@ class GameScene: ObservableObject {
             }
         }
         
-        pointLights.append(BrightBillboard(position: [0.0, 0.0, 1.0], color: [0.0, 1.0, 1.0], rotation_center: [0.0, 0.0, 1.0], pathRadius: 2.0, pathPhi: 60.0, angularVelocity: 1.0, id: OBJECT_TYPE_POINT_LIGHT));
-        pointLights.append(BrightBillboard(position: [0.0, 0.0, 1.0], color: [0.0, 0.0, 1.0], rotation_center: [0.0, 0.0, 1.0], pathRadius: 3.0, pathPhi: 0.0, angularVelocity: 2.0, id: OBJECT_TYPE_POINT_LIGHT));
+        pointLights.append(BrightBillboard(position: [0.0, 0.0, 1.0], color: [0.0, 1.0, 1.0], rotation_center: [0.0, 0.0, 1.0], pathRadius: 2.0, pathPhi: 60.0, angularVelocity: 1.0, id: OBJECT_TYPE_POINT_LIGHT))
+        pointLights.append(BrightBillboard(position: [0.0, 0.0, 1.0], color: [0.0, 0.0, 1.0], rotation_center: [0.0, 0.0, 1.0], pathRadius: 3.0, pathPhi: 0.0, angularVelocity: 2.0, id: OBJECT_TYPE_POINT_LIGHT))
         
-        captureRenderables();
+        captureRenderables()
         
     }
     

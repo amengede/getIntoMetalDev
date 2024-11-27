@@ -137,7 +137,7 @@ class Renderer: NSObject, MTKViewDelegate {
     func draw(in view: MTKView) {
         
         //update
-        scene.update();
+        scene.update()
         
         guard let drawable = view.currentDrawable else {
             return
@@ -199,7 +199,7 @@ class Renderer: NSObject, MTKViewDelegate {
         renderEncoder?.setVertexBuffer(menagerie.vertexBuffer, offset: 0, index: 0)
         renderEncoder?.setFragmentTexture(materialLump.texture, index: 0)
         renderEncoder?.setFragmentSamplerState(materialLump.sampler, index: 0)
-        renderEncoder?.setVertexBuffer(prepareScene(), offset: 0, index: 1);
+        renderEncoder?.setVertexBuffer(prepareScene(), offset: 0, index: 1)
         
         sendCameraData(renderEncoder: renderEncoder)
         
@@ -292,7 +292,7 @@ class Renderer: NSObject, MTKViewDelegate {
         
         renderEncoder?.setRenderPipelineState(pipelines[PIPELINE_TYPE_EMISSIVE]!)
         
-        draw(renderEncoder: renderEncoder, meshType: OBJECT_TYPE_POINT_LIGHT);
+        draw(renderEncoder: renderEncoder, meshType: OBJECT_TYPE_POINT_LIGHT)
         
     }
     
@@ -331,17 +331,17 @@ class Renderer: NSObject, MTKViewDelegate {
             [0.1, 0, 0, 0],
             [0, 0.1, 0, 0],
             [0, 0, 0.1, 0],
-            [0, 0, 0, 1]);
+            [0, 0, 0, 1])
         
-        let pitch = Matrix44.from(rotation: [90 - scene.player.eulers[1], 0, 0]);
+        let pitch = Matrix44.from(rotation: [90 - scene.player.eulers[1], 0, 0])
         
-        let yaw = Matrix44.from(rotation: [0, 0, 90 + scene.player.eulers[2]]);
+        let yaw = Matrix44.from(rotation: [0, 0, 90 + scene.player.eulers[2]])
         
         let translation = Matrix44.from(translation:
-            scene.player.position + scene.player.forwards - 0.1 * scene.player.right - 0.4 * scene.player.up);
+            scene.player.position + scene.player.forwards - 0.1 * scene.player.right - 0.4 * scene.player.up)
         
-        var model = translation * yaw * pitch * scale;
-        renderEncoder?.setVertexBytes(&model, length: MemoryLayout<float4x4>.stride, index: 1);
+        var model = translation * yaw * pitch * scale
+        renderEncoder?.setVertexBytes(&model, length: MemoryLayout<float4x4>.stride, index: 1)
         
         if let start = menagerie.firstVertices[OBJECT_TYPE_GUN],
            let count = menagerie.vertexCounts[OBJECT_TYPE_GUN] {

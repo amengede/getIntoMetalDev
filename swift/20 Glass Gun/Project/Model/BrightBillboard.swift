@@ -22,7 +22,7 @@ class BrightBillboard: Billboard {
         self.pathRadius = pathRadius
         self.pathPhi = pathPhi
         self.angularVelocity = angularVelocity
-        super.init(position: position, id: id, color: color);
+        super.init(position: position, id: id, color: color)
         
     }
     

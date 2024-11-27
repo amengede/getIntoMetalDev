@@ -66,15 +66,15 @@ class MaterialLump {
             from: newMaterial.texture, sourceSlice: 0, sourceLevel: 0,
             to: texture, destinationSlice: Int(layer), destinationLevel: 0,
             sliceCount: 1, levelCount: 1
-        );
+        )
         
         tempTextures.append(newMaterial)
     }
     
     func finalize() {
-        blitCommandEncoder.endEncoding();
-        commandBuffer.commit();
-        commandBuffer.waitUntilCompleted();
+        blitCommandEncoder.endEncoding()
+        commandBuffer.commit()
+        commandBuffer.waitUntilCompleted()
         
         tempTextures = []
     }

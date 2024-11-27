@@ -22,11 +22,11 @@ class ObjMesh {
         
         do {
             let raw_contents: String = try String(contentsOf: meshURL, encoding: .utf8)
-            let lines = raw_contents.components(separatedBy: "\n");
+            let lines = raw_contents.components(separatedBy: "\n")
             
             cursor = 0
             while cursor < lines.count {
-                let line = lines[cursor];
+                let line = lines[cursor]
                 let components = line.components(separatedBy: " ")
                 
                 switch components[0] {
@@ -62,7 +62,7 @@ class ObjMesh {
                 Float(components[2])!,
                 Float(components[3])!
             )
-        );
+        )
     }
     
     func read_texcoord_data(components: [String]) {
@@ -71,7 +71,7 @@ class ObjMesh {
                 Float(components[1])!,
                 Float(components[2])!
             )
-        );
+        )
     }
     
     func read_normal_data(components: [String]) {
@@ -81,7 +81,7 @@ class ObjMesh {
                 Float(components[2])!,
                 Float(components[3])!
             )
-        );
+        )
     }
     
     func read_face_data(components: [String]) {

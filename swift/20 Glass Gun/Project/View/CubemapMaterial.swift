@@ -67,9 +67,9 @@ class CubemapMaterial {
     }
     
     func finalize() {
-        blitCommandEncoder.endEncoding();
-        commandBuffer.commit();
-        commandBuffer.waitUntilCompleted();
+        blitCommandEncoder.endEncoding()
+        commandBuffer.commit()
+        commandBuffer.waitUntilCompleted()
         
         tempTextures = []
     }

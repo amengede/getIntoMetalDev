@@ -20,7 +20,7 @@ class Camera: Entity {
             cos(eulers.y.degreesToRadians()) * cos(eulers.z.degreesToRadians()),
             cos(eulers.y.degreesToRadians()) * sin(eulers.z.degreesToRadians()),
             sin(eulers.y.degreesToRadians())
-        ];
+        ]
         
         let globalUp: vector_float3 = [0.0, 0.0, 1.0]
         
