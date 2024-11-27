@@ -62,8 +62,12 @@ class Renderer: NSObject, MTKViewDelegate {
             OBJECT_TYPE_POINT_LIGHT: "star",
             OBJECT_TYPE_GUN: "gun0"
         ]
-        materialLump = MaterialLump(device: metalDevice, allocator: materialLoader,
-                                    layerCount: materialInfo.count, queue: metalCommandQueue, format: .bgra8Unorm)
+        guard let materialLump = MaterialLump(device: metalDevice, allocator: materialLoader,
+                                              layerCount: materialInfo.count, queue: metalCommandQueue, format: .bgra8Unorm) else {
+            print("[Error] failed to create renderer because of materialLump error")
+            return nil
+        }
+        self.materialLump = materialLump
         for (objectType, filename) in materialInfo {
             materialLump.consume(filename: filename, layer: objectType)
         }
@@ -88,24 +92,28 @@ class Renderer: NSObject, MTKViewDelegate {
             print("[Error] failed to create library")
             return nil
         }
-        pipelines = [:];
-        let pipelineBuilder = PipelineBuilder(device: metalDevice, library: library)
-        pipelineBuilder.setVertexDescriptor(vertexDescriptor: menagerie.getVertexDescriptor())
-        pipelines[PIPELINE_TYPE_LIT] = pipelineBuilder.BuildPipeline(
-            vsEntry: "vertexShader", fsEntry: "fragmentShader")
-        pipelines[PIPELINE_TYPE_GUN] = pipelineBuilder.BuildPipeline(
-            vsEntry: "vertexShaderGun", fsEntry: "fragmentShaderGun")
-        pipelines[PIPELINE_TYPE_EMISSIVE] = pipelineBuilder.BuildPipeline(
-            vsEntry: "vertexShaderUnlit", fsEntry: "fragmentShaderUnlit")
-        
-        screenQuad = ScreenQuad(device: metalDevice)
-        pipelineBuilder.setVertexDescriptor(vertexDescriptor: screenQuad.getVertexDescriptor())
-        pipelines[PIPELINE_TYPE_POST] = pipelineBuilder.BuildPipeline(
-            vsEntry: "vertexShaderPost", fsEntry: "fragmentShaderPost", depthEnabled: false)
-        
-        pipelines[PIPELINE_TYPE_SKY] = pipelineBuilder.BuildPipeline(
-            vsEntry: "vertexShaderSky", fsEntry: "fragmentShaderSky")
-        
+        pipelines = [:]
+        do {
+            let pipelineBuilder = PipelineBuilder(device: metalDevice, library: library)
+            pipelineBuilder.setVertexDescriptor(vertexDescriptor: menagerie.getVertexDescriptor())
+            pipelines[PIPELINE_TYPE_LIT] = try pipelineBuilder.buildPipeline(
+                vsEntry: "vertexShader", fsEntry: "fragmentShader")
+            pipelines[PIPELINE_TYPE_GUN] = try pipelineBuilder.buildPipeline(
+                vsEntry: "vertexShaderGun", fsEntry: "fragmentShaderGun")
+            pipelines[PIPELINE_TYPE_EMISSIVE] = try pipelineBuilder.buildPipeline(
+                vsEntry: "vertexShaderUnlit", fsEntry: "fragmentShaderUnlit")
+            
+            screenQuad = ScreenQuad(device: metalDevice)
+            pipelineBuilder.setVertexDescriptor(vertexDescriptor: screenQuad.getVertexDescriptor())
+            pipelines[PIPELINE_TYPE_POST] = try pipelineBuilder.buildPipeline(
+                vsEntry: "vertexShaderPost", fsEntry: "fragmentShaderPost", depthEnabled: false)
+            
+            pipelines[PIPELINE_TYPE_SKY] = try pipelineBuilder.buildPipeline(
+                vsEntry: "vertexShaderSky", fsEntry: "fragmentShaderSky")
+        } catch {
+            print("[Error] pipeline build error: \(error)")
+            return nil
+        }
         guard let worldLayer = RenderPass(device: metalDevice,
                                           width: 640, height: 480) else {
             return nil
@@ -248,7 +256,7 @@ class Renderer: NSObject, MTKViewDelegate {
         
         var cameraData: CameraParameters = CameraParameters()
         cameraData.view = scene.player.get_view_transform()
-        cameraData.projection = Matrix44.create_perspective_projection(
+        cameraData.projection = Matrix44.perspectiveProjection(
             fovy: 45, aspect: 800/600, near: 0.1, far: 20
         )
         renderEncoder?.setVertexBytes(&cameraData, length: MemoryLayout<CameraParameters>.stride, index: 2)
@@ -325,11 +333,11 @@ class Renderer: NSObject, MTKViewDelegate {
             [0, 0, 0.1, 0],
             [0, 0, 0, 1]);
         
-        let pitch = Matrix44.create_from_rotation(eulers: [90 - scene.player.eulers[1], 0, 0]);
+        let pitch = Matrix44.from(rotation: [90 - scene.player.eulers[1], 0, 0]);
         
-        let yaw = Matrix44.create_from_rotation(eulers: [0, 0, 90 + scene.player.eulers[2]]);
+        let yaw = Matrix44.from(rotation: [0, 0, 90 + scene.player.eulers[2]]);
         
-        let translation = Matrix44.create_from_translation(translation:
+        let translation = Matrix44.from(translation:
             scene.player.position + scene.player.forwards - 0.1 * scene.player.right - 0.4 * scene.player.up);
         
         var model = translation * yaw * pitch * scale;

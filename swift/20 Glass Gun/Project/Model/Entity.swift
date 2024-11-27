@@ -24,7 +24,7 @@ class Entity {
     }
     
     func get_model_transform() -> simd_float4x4 {
-        let model = Matrix44.create_from_rotation(eulers: eulers)
-        return Matrix44.create_from_translation(translation: position) * model
+        let model = Matrix44.from(rotation: eulers)
+        return Matrix44.from(translation: position) * model
     }
 }

@@ -64,7 +64,7 @@ class Camera: Entity {
     }
     
     func get_view_transform() -> simd_float4x4 {
-        Matrix44.create_lookat(
+        Matrix44.lookAt(
             eye: position,
             target: position + forwards,
             up: up

@@ -10,7 +10,7 @@ import simd
 
 enum Matrix44 {
     
-    static func create_identity() -> float4x4 {
+    static func identity() -> float4x4 {
         return float4x4 (
             [1, 0, 0, 0],
             [0, 1, 0, 0],
@@ -19,7 +19,7 @@ enum Matrix44 {
         )
     }
     
-    static func create_from_translation(translation: simd_float3) -> float4x4 {
+    static func from(translation: simd_float3) -> float4x4 {
         return float4x4 (
             [1,                 0,              0,              0],
             [0,                 1,              0,              0],
@@ -28,14 +28,14 @@ enum Matrix44 {
         )
     }
     
-    static func create_from_rotation(eulers: simd_float3) -> float4x4 {
-        let gamma: Float = eulers[0].degreesToRadians()
-        let beta: Float = eulers[1].degreesToRadians()
-        let alpha: Float = eulers[2].degreesToRadians()
-        return create_from_z_rotation(theta: alpha) * create_from_y_rotation(theta: beta) * create_from_x_rotation(theta: gamma)
+    static func from(rotation eulers: simd_float3) -> float4x4 {
+        let gamma = eulers[0].degreesToRadians()
+        let beta = eulers[1].degreesToRadians()
+        let alpha = eulers[2].degreesToRadians()
+        return from(zRotation: alpha) * from(yRotation: beta) * from(xRotation: gamma)
     }
     
-    static func create_lookat(eye: simd_float3, target: simd_float3, up: simd_float3) -> float4x4 {
+    static func lookAt(eye: simd_float3, target: simd_float3, up: simd_float3) -> float4x4 {
         let forwards: simd_float3 = simd.normalize(target - eye)
         let right: simd_float3 = simd.normalize(simd.cross(up, forwards))
         let up2: simd_float3 = simd.normalize(simd.cross(forwards, right))
@@ -50,13 +50,13 @@ enum Matrix44 {
         
     }
     
-    static func create_perspective_projection(fovy: Float, aspect: Float, near: Float, far: Float) -> float4x4 {
+    static func perspectiveProjection(fovy: Float, aspect: Float, near: Float, far: Float) -> float4x4 {
         
-        let A: Float = aspect * 1 / tan(fovy * .pi / 360)
-        let B: Float = 1 / tan(fovy * .pi / 360)
-        let C: Float = far / (far - near)
-        let D: Float = 1
-        let E: Float = -near * far / (far - near)
+        let A = aspect / tan(fovy * .pi / 360)
+        let B = 1.0 / tan(fovy * .pi / 360)
+        let C = far / (far - near)
+        let D = 1.0 as Float
+        let E = -near * far / (far - near)
         
         return float4x4(
             [A, 0, 0, 0],
@@ -66,7 +66,7 @@ enum Matrix44 {
         )
     }
     
-    static private func create_from_x_rotation(theta: Float) -> float4x4 {
+    static private func from(xRotation theta: Float) -> float4x4 {
         return float4x4(
             [1,           0,          0, 0],
             [0,  cos(theta), sin(theta), 0],
@@ -75,7 +75,7 @@ enum Matrix44 {
         )
     }
     
-    static private func create_from_y_rotation(theta: Float) -> float4x4 {
+    static private func from(yRotation theta: Float) -> float4x4 {
         return float4x4(
             [cos(theta), 0, -sin(theta), 0],
             [         0, 1,           0, 0],
@@ -84,7 +84,7 @@ enum Matrix44 {
         )
     }
     
-    static private func create_from_z_rotation(theta: Float) -> float4x4 {
+    static private func from(zRotation theta: Float) -> float4x4 {
         return float4x4(
             [ cos(theta), sin(theta), 0, 0],
             [-sin(theta), cos(theta), 0, 0],

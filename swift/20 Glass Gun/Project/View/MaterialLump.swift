@@ -12,12 +12,14 @@ class MaterialLump {
     var sampler: MTLSamplerState
     var commandBuffer: MTLCommandBuffer
     var blitCommandEncoder: MTLBlitCommandEncoder
-    var tempTextures: [Material]
+    var tempTextures: [Material] = []
     var device: MTLDevice
     var allocator: MTKTextureLoader
     
-    init(device: MTLDevice, allocator: MTKTextureLoader, layerCount: Int, queue: MTLCommandQueue, format: MTLPixelFormat) {
-        
+    init?(device: MTLDevice, allocator: MTKTextureLoader, layerCount: Int, queue: MTLCommandQueue, format: MTLPixelFormat) {
+        self.allocator = allocator
+        self.device = device
+
         let textureDescriptor: MTLTextureDescriptor = MTLTextureDescriptor()
         textureDescriptor.textureType = .type2DArray
         textureDescriptor.pixelFormat = format
@@ -30,7 +32,11 @@ class MaterialLump {
         textureDescriptor.allowGPUOptimizedContents = true
         textureDescriptor.usage = .shaderRead
         
-        texture = device.makeTexture(descriptor: textureDescriptor)!
+        guard let texture = device.makeTexture(descriptor: textureDescriptor) else {
+            print("[Error] failed to create material texture")
+            return nil
+        }
+        self.texture = texture
         
         commandBuffer = queue.makeCommandBuffer()!
         blitCommandEncoder = commandBuffer.makeBlitCommandEncoder()!
@@ -42,12 +48,12 @@ class MaterialLump {
         samplerDescriptor.minFilter = .nearest
         samplerDescriptor.mipFilter = .linear
         samplerDescriptor.maxAnisotropy = 8
-        sampler = device.makeSamplerState(descriptor: samplerDescriptor)!
         
-        tempTextures = []
-        
-        self.allocator = allocator
-        self.device = device
+        guard let sampler = device.makeSamplerState(descriptor: samplerDescriptor) else {
+            print("[Error] failed to create material lump sampler")
+            return nil
+        }
+        self.sampler = sampler
     }
         
     func consume(filename: String, layer: Int32) {
