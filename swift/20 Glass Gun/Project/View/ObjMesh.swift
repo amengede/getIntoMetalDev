@@ -22,35 +22,30 @@ class ObjMesh {
         
         do {
             let raw_contents: String = try String(contentsOf: meshURL, encoding: .utf8)
-            let lines: [String] = raw_contents.components(separatedBy: "\n");
+            let lines = raw_contents.components(separatedBy: "\n");
             
-            cursor = 0;
-            while (cursor < lines.count) {
-                let line: String = lines[cursor];
-                let components: [String] = line.components(separatedBy: " ")
+            cursor = 0
+            while cursor < lines.count {
+                let line = lines[cursor];
+                let components = line.components(separatedBy: " ")
                 
-                switch (components[0]) {
+                switch components[0] {
                 case "v":
                     //add vertex to vertices set
-                    read_vertex_data(components: components);
-                    break;
+                    read_vertex_data(components: components)
                 case "vt":
                     //add texture coords to texcoords set
-                    read_texcoord_data(components: components);
-                    break;
+                    read_texcoord_data(components: components)
                 case "vn":
                     //add normal to normals set
-                    read_normal_data(components: components);
-                    break;
+                    read_normal_data(components: components)
                 case "f":
                     //add face data
-                    read_face_data(components: components);
-                    break;
+                    read_face_data(components: components)
                 default:
-                    break;
+                    break
                 }
-                
-                cursor += 1;
+                cursor += 1
             }
             
         }

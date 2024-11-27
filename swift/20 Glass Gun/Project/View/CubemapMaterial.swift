@@ -52,9 +52,10 @@ class CubemapMaterial {
     }
         
     func consume(filename: String, layer: Int32) {
-        
-        let newMaterial = Material(
-            device: device, allocator: allocator, filename: filename, filenameExtension: "png")
+        guard let newMaterial = Material(
+            device: device, allocator: allocator, filename: filename, filenameExtension: "png") else {
+            return
+        }
         
         blitCommandEncoder.copy(
             from: newMaterial.texture, sourceSlice: 0, sourceLevel: 0,

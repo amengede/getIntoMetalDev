@@ -11,7 +11,7 @@ class Material {
     let texture: MTLTexture
     let sampler: MTLSamplerState
     
-    init(device: MTLDevice, allocator: MTKTextureLoader, filename: String, filenameExtension: String) {
+    init?(device: MTLDevice, allocator: MTKTextureLoader, filename: String, filenameExtension: String) {
         //Configure texture properties.
         let options: [MTKTextureLoader.Option: Any] = [
             .SRGB: false,
@@ -19,12 +19,14 @@ class Material {
         ]
 
         guard let materialURL = Bundle.main.url(forResource: filename, withExtension: filenameExtension) else {
-            fatalError()
+            print("[Error] Failed to create material URL")
+            return nil
         }
         do {
             texture = try allocator.newTexture(URL: materialURL, options: options)
         } catch {
-            fatalError("couldn't load material from \(filename)")
+            print("[Error] couldn't load material from \(filename)")
+            return nil
         }
         
         let samplerDescriptor = MTLSamplerDescriptor()
@@ -35,6 +37,10 @@ class Material {
         samplerDescriptor.mipFilter = .linear
         samplerDescriptor.maxAnisotropy = 8
         
-        sampler = device.makeSamplerState(descriptor: samplerDescriptor)!
+        guard let sampler = device.makeSamplerState(descriptor: samplerDescriptor) else {
+            print("[Error] Failed to create sampler")
+            return nil
+        }
+        self.sampler = sampler
     }
 }
