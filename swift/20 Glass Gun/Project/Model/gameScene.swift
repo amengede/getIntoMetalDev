@@ -34,10 +34,10 @@ class GameScene : ObservableObject {
         instanceCounts = [:];
         //firstInstancesFlat = [];
         
-        player = Camera(position: [-6.0, 6.0, 4.0], eulers: [0.0, -15.0, -45.0], id: OBJECT_TYPE_PLAYER);
+        player = Camera(position: [-6.0, 6.0, 4.0], eulers: [0.0, -15.0, -45.0], id: OBJECT_TYPE_PLAYER)
         
         mouse = Billboard(
-            position: [0.0, 0.0, 2.7], id: OBJECT_TYPE_MOUSE, color: simd_float3(repeating: 1.0));
+            position: [0.0, 0.0, 2.7], id: OBJECT_TYPE_MOUSE, color: simd_float3(repeating: 1.0))
         
         let newSpotlight = Light(color: [1.0, 0.0, 0.0])
         newSpotlight.declareSpotlight(position: [-2, 0.0, 3.0], eulers: [0.0, 0.0, 180.0], eulerVelocity: [0.0, 0.0, 45.0])

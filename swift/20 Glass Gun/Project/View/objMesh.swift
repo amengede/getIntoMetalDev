@@ -20,7 +20,7 @@ class ObjMesh {
         }
         
         do {
-            let raw_contents: String = try String.init(contentsOf: meshURL);
+            let raw_contents: String = try String(contentsOf: meshURL, encoding: .utf8)
             let lines: [String] = raw_contents.components(separatedBy: "\n");
             
             cursor = 0;

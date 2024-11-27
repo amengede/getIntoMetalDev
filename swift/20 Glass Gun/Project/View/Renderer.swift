@@ -20,7 +20,7 @@ class Renderer: NSObject, MTKViewDelegate {
     
     var scene: GameScene
     
-    let menagerie: vertexMenagerie
+    let menagerie = vertexMenagerie()
     let materialLump: MaterialLump
     let cubemap: CubemapMaterial
     
@@ -28,7 +28,7 @@ class Renderer: NSObject, MTKViewDelegate {
     let gunLayer: RenderPass
     let screenQuad: ScreenQuad
     
-    init(_ parent: ContentView, scene: GameScene) {
+    init?(_ parent: ContentView, scene: GameScene) {
         
         self.parent = parent
         if let metalDevice = MTLCreateSystemDefaultDevice() {
@@ -46,11 +46,11 @@ class Renderer: NSObject, MTKViewDelegate {
             OBJECT_TYPE_POINT_LIGHT: "light",
             OBJECT_TYPE_GUN: "gun",
         ]
-        menagerie = vertexMenagerie();
+        
         for (objectType, modelName) in modelInfo {
-            menagerie.consume(mesh: ObjMesh(filename: modelName), meshType: objectType);
+            menagerie.consume(mesh: ObjMesh(filename: modelName), meshType: objectType)
         }
-        menagerie.finalize(device: metalDevice);
+        menagerie.finalize(device: metalDevice)
         
         let materialInfo: [Int32: String] = [
             OBJECT_TYPE_CUBE: "arty",
@@ -60,7 +60,7 @@ class Renderer: NSObject, MTKViewDelegate {
             OBJECT_TYPE_GUN: "gun0"
         ]
         materialLump = MaterialLump(device: metalDevice, allocator: materialLoader,
-                                    layerCount: materialInfo.count, queue: metalCommandQueue, format: .bgra8Unorm);
+                                    layerCount: materialInfo.count, queue: metalCommandQueue, format: .bgra8Unorm)
         for (objectType, filename) in materialInfo {
             materialLump.consume(filename: filename, layer: objectType)
         }
@@ -82,7 +82,8 @@ class Renderer: NSObject, MTKViewDelegate {
         
         
         guard let library: MTLLibrary = metalDevice.makeDefaultLibrary() else {
-            fatalError()
+            print("[Error] failed to create library")
+            return nil
         }
         pipelines = [:];
         let pipelineBuilder = PipelineBuilder(device: metalDevice, library: library)
@@ -102,10 +103,17 @@ class Renderer: NSObject, MTKViewDelegate {
         pipelines[PIPELINE_TYPE_SKY] = pipelineBuilder.BuildPipeline(
             vsEntry: "vertexShaderSky", fsEntry: "fragmentShaderSky")
         
-        worldLayer = RenderPass(device: metalDevice,
-                                      width: 640, height: 480)
-        gunLayer = RenderPass(device: metalDevice,
-                                      width: 640, height: 480)
+        guard let worldLayer = RenderPass(device: metalDevice,
+                                          width: 640, height: 480) else {
+            return nil
+        }
+        self.worldLayer = worldLayer
+        
+        guard let gunLayer = RenderPass(device: metalDevice,
+                                        width: 640, height: 480) else {
+            return nil
+        }
+        self.gunLayer = gunLayer
         
         self.scene = scene
         
@@ -151,14 +159,14 @@ class Renderer: NSObject, MTKViewDelegate {
     }
     
     func drawSky(renderEncoder: MTLRenderCommandEncoder?) {
-        
-        renderEncoder?.setRenderPipelineState(pipelines[PIPELINE_TYPE_SKY]!)
-        renderEncoder?.setVertexBuffer(screenQuad.vertexBuffer, offset: 0, index: 0)
-        renderEncoder?.setFragmentTexture(cubemap.texture, index: 0)
-        renderEncoder?.setFragmentSamplerState(cubemap.sampler, index: 0)
-        
-        let dy: Float32 = tan(.pi / 8);
-        let dx: Float32 = 0.5 * dy * 800/600;
+        if let state = pipelines[PIPELINE_TYPE_SKY] {
+            renderEncoder?.setRenderPipelineState(state)
+            renderEncoder?.setVertexBuffer(screenQuad.vertexBuffer, offset: 0, index: 0)
+            renderEncoder?.setFragmentTexture(cubemap.texture, index: 0)
+            renderEncoder?.setFragmentSamplerState(cubemap.sampler, index: 0)
+        }
+        let dy: Float32 = tan(.pi / 8)
+        let dx: Float32 = 0.5 * dy * 800/600
         
         var cameraFrame: CameraFrame = CameraFrame(
             forwards: scene.player.forwards,
@@ -186,11 +194,11 @@ class Renderer: NSObject, MTKViewDelegate {
         
         sendLightData(renderEncoder: renderEncoder)
         
-        draw(renderEncoder: renderEncoder, meshType: OBJECT_TYPE_CUBE);
+        draw(renderEncoder: renderEncoder, meshType: OBJECT_TYPE_CUBE)
         
-        draw(renderEncoder: renderEncoder, meshType: OBJECT_TYPE_GROUND);
+        draw(renderEncoder: renderEncoder, meshType: OBJECT_TYPE_GROUND)
         
-        draw(renderEncoder: renderEncoder, meshType: OBJECT_TYPE_MOUSE);
+        draw(renderEncoder: renderEncoder, meshType: OBJECT_TYPE_MOUSE)
         
     }
     

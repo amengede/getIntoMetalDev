@@ -21,9 +21,9 @@ class ScreenQuad {
             SimpleVertex(position: [ 1.0,  1.0]),
             SimpleVertex(position: [-1.0,  1.0]),
             SimpleVertex(position: [-1.0, -1.0])
-        ];
-        vertexBuffer = device.makeBuffer(bytes: data, length: data.count * MemoryLayout<SimpleVertex>.stride);
-        vertexCount = 6;
+        ]
+        vertexBuffer = device.makeBuffer(bytes: data, length: data.count * MemoryLayout<SimpleVertex>.stride)
+        vertexCount = 6
     }
     
     func getVertexDescriptor() -> MTLVertexDescriptor {

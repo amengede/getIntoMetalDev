@@ -12,7 +12,7 @@ struct ContentView: UIViewRepresentable {
     
     @EnvironmentObject var gameScene: GameScene
         
-    func makeCoordinator() -> Renderer {
+    func makeCoordinator() -> Renderer? {
         Renderer(self, scene: gameScene)
     }
     

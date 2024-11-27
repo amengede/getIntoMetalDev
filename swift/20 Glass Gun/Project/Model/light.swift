@@ -14,12 +14,12 @@ class Light {
     var eulers: simd_float3?
     var forwards: vector_float3?
     var color: vector_float3
-    var t: Float?
+    var t: Float = 0.0
     var rotationCenter: vector_float3?
     var pathRadius: Float?
     var pathPhi: Float?
     var eulerVelocity: vector_float3?
-    var angularVelocity: Float?
+    var angularVelocity: Float = 0.0
     
     
     init(color: vector_float3) {
@@ -82,14 +82,12 @@ class Light {
             ]
             
         } else if type == POINTLIGHT {
-            position![0] = rotationCenter![0] + pathRadius! * cos(t!) * sin(pathPhi! * .pi / 180.0)
-            position![1] = rotationCenter![1] + pathRadius! * sin(t!) * sin(pathPhi! * .pi / 180.0)
+            position![0] = rotationCenter![0] + pathRadius! * cos(t) * sin(pathPhi! * .pi / 180.0)
+            position![1] = rotationCenter![1] + pathRadius! * sin(t) * sin(pathPhi! * .pi / 180.0)
             position![2] = rotationCenter![2] + pathRadius! * cos(pathPhi! * .pi / 180.0)
             
-            t! += angularVelocity! * 0.1;
-            if t! > (2.0 * .pi) {
-                t! -= 2.0 * .pi
-            }
+            t += angularVelocity * 0.1
+            t = t.truncatingRemainder(dividingBy: 2 * .pi)
         }
         
     }

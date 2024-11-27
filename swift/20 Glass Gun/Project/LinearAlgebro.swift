@@ -8,7 +8,7 @@
 import Foundation
 import simd
 
-class Matrix44{
+enum Matrix44 {
     
     static func create_identity() -> float4x4 {
         return float4x4 (

@@ -4,12 +4,6 @@
 //
 //  Created by Andrew Mengede on 29/7/2024.
 //
-//
-//  material.swift
-//  Project
-//
-//  Created by Andrew Mengede on 22/6/2022.
-//
 
 import MetalKit
 
@@ -25,22 +19,22 @@ class CubemapMaterial {
     
     init(device: MTLDevice, allocator: MTKTextureLoader, queue: MTLCommandQueue, format: MTLPixelFormat) {
         
-        let textureDescriptor: MTLTextureDescriptor = MTLTextureDescriptor();
-        textureDescriptor.textureType = .typeCube;
-        textureDescriptor.pixelFormat = format;
-        textureDescriptor.width = 1024;
-        textureDescriptor.height = 1024;
-        textureDescriptor.depth = 1;
-        textureDescriptor.mipmapLevelCount = 1;
-        textureDescriptor.sampleCount = 1;
-        textureDescriptor.arrayLength = 1;
-        textureDescriptor.allowGPUOptimizedContents = true;
-        textureDescriptor.usage = .shaderRead;
+        let textureDescriptor: MTLTextureDescriptor = MTLTextureDescriptor()
+        textureDescriptor.textureType = .typeCube
+        textureDescriptor.pixelFormat = format
+        textureDescriptor.width = 1024
+        textureDescriptor.height = 1024
+        textureDescriptor.depth = 1
+        textureDescriptor.mipmapLevelCount = 1
+        textureDescriptor.sampleCount = 1
+        textureDescriptor.arrayLength = 1
+        textureDescriptor.allowGPUOptimizedContents = true
+        textureDescriptor.usage = .shaderRead
         
-        texture = device.makeTexture(descriptor: textureDescriptor)!;
+        texture = device.makeTexture(descriptor: textureDescriptor)!
         
-        commandBuffer = queue.makeCommandBuffer()!;
-        blitCommandEncoder = commandBuffer.makeBlitCommandEncoder()!;
+        commandBuffer = queue.makeCommandBuffer()!
+        blitCommandEncoder = commandBuffer.makeBlitCommandEncoder()!
         
         let samplerDescriptor = MTLSamplerDescriptor()
         samplerDescriptor.sAddressMode = .repeat
@@ -49,7 +43,7 @@ class CubemapMaterial {
         samplerDescriptor.minFilter = .nearest
         samplerDescriptor.mipFilter = .linear
         samplerDescriptor.maxAnisotropy = 8
-        sampler = device.makeSamplerState(descriptor: samplerDescriptor)!;
+        sampler = device.makeSamplerState(descriptor: samplerDescriptor)!
         
         tempTextures = []
         
