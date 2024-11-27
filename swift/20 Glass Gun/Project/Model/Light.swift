@@ -63,9 +63,9 @@ class Light {
         if type == DIRECTIONAL {
                 
             forwards = [
-                cos(eulers![2].degreeToRadians()) * sin(eulers![1].degreeToRadians()),
-                sin(eulers![2].degreeToRadians()) * sin(eulers![1].degreeToRadians()),
-                cos(eulers![1].degreeToRadians())
+                cos(eulers![2].degreesToRadians()) * sin(eulers![1].degreesToRadians()),
+                sin(eulers![2].degreesToRadians()) * sin(eulers![1].degreesToRadians()),
+                cos(eulers![1].degreesToRadians())
             ]
                 
         } else if type == SPOTLIGHT {
@@ -76,15 +76,15 @@ class Light {
             }
             
             forwards = [
-                cos(eulers![2].degreeToRadians()) * sin(eulers![1].degreeToRadians()),
-                sin(eulers![2].degreeToRadians()) * sin(eulers![1].degreeToRadians()),
-                cos(eulers![1].degreeToRadians())
+                cos(eulers![2].degreesToRadians()) * sin(eulers![1].degreesToRadians()),
+                sin(eulers![2].degreesToRadians()) * sin(eulers![1].degreesToRadians()),
+                cos(eulers![1].degreesToRadians())
             ]
             
         } else if type == POINTLIGHT {
-            position![0] = rotationCenter![0] + pathRadius! * cos(t) * sin(pathPhi!.degreeToRadians())
-            position![1] = rotationCenter![1] + pathRadius! * sin(t) * sin(pathPhi!.degreeToRadians())
-            position![2] = rotationCenter![2] + pathRadius! * cos(pathPhi!.degreeToRadians())
+            position![0] = rotationCenter![0] + pathRadius! * cos(t) * sin(pathPhi!.degreesToRadians())
+            position![1] = rotationCenter![1] + pathRadius! * sin(t) * sin(pathPhi!.degreesToRadians())
+            position![2] = rotationCenter![2] + pathRadius! * cos(pathPhi!.degreesToRadians())
             
             t += angularVelocity * 0.1
             t = t.truncatingRemainder(dividingBy: 2 * .pi)

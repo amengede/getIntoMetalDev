@@ -6,7 +6,11 @@
 //
 
 extension Float {
-    func degreeToRadians() -> Float {
+    func degreesToRadians() -> Float {
         self * .pi / 180.0
+    }
+    
+    func radiansToDegrees() -> Float {
+        self *  180.0 / .pi
     }
 }

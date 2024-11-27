@@ -17,9 +17,9 @@ class Camera: Entity {
     init(position: simd_float3, eulers: simd_float3, id: Int32) {
         
         forwards = [
-            cos(eulers.y.degreeToRadians()) * cos(eulers.z.degreeToRadians()),
-            cos(eulers.y.degreeToRadians()) * sin(eulers.z.degreeToRadians()),
-            sin(eulers.y.degreeToRadians())
+            cos(eulers.y.degreesToRadians()) * cos(eulers.z.degreesToRadians()),
+            cos(eulers.y.degreesToRadians()) * sin(eulers.z.degreesToRadians()),
+            sin(eulers.y.degreesToRadians())
         ];
         
         let globalUp: vector_float3 = [0.0, 0.0, 1.0]
@@ -50,9 +50,9 @@ class Camera: Entity {
     func update() {
         
         forwards = [
-            cos(eulers.y.degreeToRadians()) * cos(eulers.z.degreeToRadians()),
-            cos(eulers.y.degreeToRadians()) * sin(eulers.z.degreeToRadians()),
-            sin(eulers.y.degreeToRadians())
+            cos(eulers.y.degreesToRadians()) * cos(eulers.z.degreesToRadians()),
+            cos(eulers.y.degreesToRadians()) * sin(eulers.z.degreesToRadians()),
+            sin(eulers.y.degreesToRadians())
         ]
         
         let globalUp: vector_float3 = [0.0, 0.0, 1.0]

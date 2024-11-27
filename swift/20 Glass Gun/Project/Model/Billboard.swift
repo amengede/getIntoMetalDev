@@ -17,10 +17,10 @@ class Billboard: Entity {
     func update(viewerPosition: simd_float3) {
         
         let selfToViewer: simd_float3 = viewerPosition - position
-        eulers.z = simd.atan2(selfToViewer[1], selfToViewer[0]) * 180.0 / .pi
+        eulers.z = simd.atan2(selfToViewer[1], selfToViewer[0]).radiansToDegrees()
         
         let horizontalDistance: Float = sqrtf(selfToViewer[0] * selfToViewer[0] + selfToViewer[1] * selfToViewer[1])
-        eulers.y = -simd.atan2(selfToViewer[2], horizontalDistance) * 180.0 / .pi
+        eulers.y = -simd.atan2(selfToViewer[2], horizontalDistance).radiansToDegrees()
         
     }
 }
