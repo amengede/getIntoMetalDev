@@ -86,7 +86,7 @@ class GameScene: ObservableObject {
         renderables[OBJECT_TYPE_GROUND] = [];
         firstInstances[OBJECT_TYPE_GROUND] = offset;
         for tile in groundTiles {
-            renderables[OBJECT_TYPE_GROUND]?.append(tile);
+            renderables[OBJECT_TYPE_GROUND]?.append(tile)
         }
         instanceCounts[OBJECT_TYPE_GROUND] = renderables[OBJECT_TYPE_GROUND]?.count;
         offset += instanceCounts[OBJECT_TYPE_GROUND]!;
@@ -112,21 +112,21 @@ class GameScene: ObservableObject {
     }
     
     func update() {
-        
-        var movement: simd_float2 = [0.0, 0.0];
+        let speed: Float = 0.1
+        var movement: simd_float2 = [0.0, 0.0]
         if InputController.controller.keysPressed.contains(.keyW) {
-            movement[0] += 0.1;
+            movement[0] += speed
         }
         else if InputController.controller.keysPressed.contains(.keyA) {
-            movement[1] += 0.1;
+            movement[1] += speed
         }
         else if InputController.controller.keysPressed.contains(.keyS) {
-            movement[0] -= 0.1;
+            movement[0] -= speed
         }
         else if InputController.controller.keysPressed.contains(.keyD) {
-            movement[1] -= 0.1;
+            movement[1] -= speed
         }
-        player.move(amount: movement);
+        player.move(amount: movement)
                 
         let newMouseDelta: Point2D = InputController.controller.mouseDelta
         if (
