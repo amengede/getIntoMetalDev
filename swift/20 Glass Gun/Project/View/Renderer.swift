@@ -20,7 +20,7 @@ class Renderer: NSObject, MTKViewDelegate {
     
     var scene: GameScene
     
-    let menagerie = vertexMenagerie()
+    let menagerie = VertexMenagerie()
     let materialLump: MaterialLump
     let cubemap: CubemapMaterial
     

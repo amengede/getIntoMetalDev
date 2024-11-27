@@ -17,20 +17,14 @@ struct ContentView: UIViewRepresentable {
     }
     
     func makeUIView(context: UIViewRepresentableContext<ContentView>) -> MTKView {
-        
         let mtkView = MTKView()
         mtkView.delegate = context.coordinator
         mtkView.preferredFramesPerSecond = 60
         mtkView.enableSetNeedsDisplay = true
-        
-        if let metalDevice = MTLCreateSystemDefaultDevice() {
-            mtkView.device = metalDevice
-        }
-        
+        mtkView.device = MTLCreateSystemDefaultDevice()
         mtkView.framebufferOnly = true
         mtkView.drawableSize = mtkView.frame.size
         mtkView.isPaused = false
-        
         return mtkView
     }
     

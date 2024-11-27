@@ -8,13 +8,10 @@
 import MetalKit
 
 class Material {
-    
     let texture: MTLTexture
     let sampler: MTLSamplerState
     
     init(device: MTLDevice, allocator: MTKTextureLoader, filename: String, filenameExtension: String) {
-
-        
         //Configure texture properties.
         let options: [MTKTextureLoader.Option: Any] = [
             .SRGB: false,

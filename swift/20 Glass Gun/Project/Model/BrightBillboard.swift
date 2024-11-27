@@ -1,5 +1,5 @@
 //
-//  brightBillboard.swift
+//  BrightBillboard.swift
 //  Project
 //
 //  Created by Andrew Mengede on 4/8/2022.

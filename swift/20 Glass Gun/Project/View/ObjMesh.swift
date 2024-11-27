@@ -1,5 +1,5 @@
 //
-//  objMesh.swift
+//  ObjMesh.swift
 //  metal5
 //
 //  Created by Andrew Mengede on 6/1/22.

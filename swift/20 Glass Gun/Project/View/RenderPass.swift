@@ -1,5 +1,5 @@
 //
-//  renderPass.swift
+//  RenderPass.swift
 //  Project
 //
 //  Created by Andrew Mengede on 14/4/2023.

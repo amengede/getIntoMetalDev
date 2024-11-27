@@ -1,5 +1,5 @@
 //
-//  billboard.swift
+//  Billboard.swift
 //  Project
 //
 //  Created by Andrew Mengede on 28/7/2022.

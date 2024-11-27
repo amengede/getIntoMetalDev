@@ -1,5 +1,5 @@
 //
-//  Scene.swift
+//  GameScene.swift
 //  Transformations
 //
 //  Created by Andrew Mengede on 2/3/2022.
@@ -8,7 +8,7 @@
 import Foundation
 import SwiftUI
 
-class GameScene : ObservableObject {
+class GameScene: ObservableObject {
     
     @Published var player: Camera
     @Published var renderables: [Int32:[Entity]]

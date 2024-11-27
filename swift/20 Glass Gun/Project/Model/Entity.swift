@@ -1,5 +1,5 @@
 //
-//  simpleComponent.swift
+//  Entity.swift
 //  Transformations
 //
 //  Created by Andrew Mengede on 2/3/2022.

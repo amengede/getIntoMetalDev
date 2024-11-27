@@ -1,5 +1,5 @@
 //
-//  cubemapMaterial.swift
+//  CubemapMaterial.swift
 //  Project
 //
 //  Created by Andrew Mengede on 29/7/2024.

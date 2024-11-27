@@ -1,5 +1,5 @@
 //
-//  projectApp.swift
+//  ProjectApp.swift
 //  Project
 //
 //  Created by Andrew Mengede on 3/3/2022.
@@ -20,7 +20,7 @@ struct ProjectApp: App {
         
         //create a view of the underlying scene data
         WindowGroup {
-            appView().environmentObject(gameScene)
+            AppView().environmentObject(gameScene)
         }
     }
 }

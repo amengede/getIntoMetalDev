@@ -1,5 +1,5 @@
 //
-//  light.swift
+//  Light.swift
 //  Project
 //
 //  Created by Andrew Mengede on 3/7/2022.

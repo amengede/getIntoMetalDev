@@ -6,6 +6,7 @@
 //
 
 import Foundation
+
 class Camera: Entity {
     
     var forwards: vector_float3
