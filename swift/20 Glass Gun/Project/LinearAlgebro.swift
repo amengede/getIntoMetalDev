@@ -29,9 +29,9 @@ enum Matrix44 {
     }
     
     static func create_from_rotation(eulers: simd_float3) -> float4x4 {
-        let gamma: Float = eulers[0] * .pi / 180.0
-        let beta: Float = eulers[1] * .pi / 180.0
-        let alpha: Float = eulers[2] * .pi / 180.0
+        let gamma: Float = eulers[0].degreeToRadians()
+        let beta: Float = eulers[1].degreeToRadians()
+        let alpha: Float = eulers[2].degreeToRadians()
         return create_from_z_rotation(theta: alpha) * create_from_y_rotation(theta: beta) * create_from_x_rotation(theta: gamma)
     }
     

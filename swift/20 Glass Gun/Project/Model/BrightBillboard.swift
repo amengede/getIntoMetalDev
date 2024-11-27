@@ -28,9 +28,9 @@ class BrightBillboard: Billboard {
     
     override func update(viewerPosition: simd_float3) {
         
-        position[0] = rotationCenter[0] + pathRadius * cos(t) * sin(pathPhi * .pi / 180.0)
-        position[1] = rotationCenter[1] + pathRadius * sin(t) * sin(pathPhi * .pi / 180.0)
-        position[2] = rotationCenter[2] + pathRadius * cos(pathPhi * .pi / 180.0)
+        position[0] = rotationCenter[0] + pathRadius * cos(t) * sin(pathPhi.degreeToRadians())
+        position[1] = rotationCenter[1] + pathRadius * sin(t) * sin(pathPhi.degreeToRadians())
+        position[2] = rotationCenter[2] + pathRadius * cos(pathPhi.degreeToRadians())
         
         t += angularVelocity * 0.1
         t = t.truncatingRemainder(dividingBy: 2.0 * .pi)

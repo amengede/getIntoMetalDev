@@ -53,6 +53,7 @@
 		76F16EF8287122A800041664 /* ground.mtl in Resources */ = {isa = PBXBuildFile; fileRef = 76F16EF7287122A800041664 /* ground.mtl */; };
 		76F16EFA287122B400041664 /* ground.obj in Resources */ = {isa = PBXBuildFile; fileRef = 76F16EF9287122B400041664 /* ground.obj */; };
 		76F16F0028714F3300041664 /* Light.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76F16EFF28714F3300041664 /* Light.swift */; };
+		A5C402672CF7515100157C4B /* Math.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5C402662CF7514C00157C4B /* Math.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -105,6 +106,7 @@
 		76F16EF7287122A800041664 /* ground.mtl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = ground.mtl; sourceTree = "<group>"; };
 		76F16EF9287122B400041664 /* ground.obj */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = ground.obj; sourceTree = "<group>"; };
 		76F16EFF28714F3300041664 /* Light.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Light.swift; sourceTree = "<group>"; };
+		A5C402662CF7514C00157C4B /* Math.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Math.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -169,6 +171,7 @@
 				764AB75A27D0EC0200812B70 /* Model */,
 				764AB76127D0EC0D00812B70 /* View */,
 				764AB75527D0EBB300812B70 /* LinearAlgebro.swift */,
+				A5C402662CF7514C00157C4B /* Math.swift */,
 				764AB75927D0EBD800812B70 /* definitions.h */,
 				764AB75727D0EBC400812B70 /* Shaders.metal */,
 				760550B6289BD871006D804E /* unlitShaders.metal */,
@@ -331,6 +334,7 @@
 				7693A3D428633C91001FE7F7 /* Material.swift in Sources */,
 				76115EA4289257EA00633C17 /* Billboard.swift in Sources */,
 				760550B7289BD871006D804E /* unlitShaders.metal in Sources */,
+				A5C402672CF7515100157C4B /* Math.swift in Sources */,
 				76BA3412298D91E30037E1D0 /* MaterialLump.swift in Sources */,
 				764AB76B27D0EC6500812B70 /* ProjectApp.swift in Sources */,
 				76A45BD02C57AC65006D2958 /* skyShader.metal in Sources */,
