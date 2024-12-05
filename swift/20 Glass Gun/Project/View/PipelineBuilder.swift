@@ -24,8 +24,7 @@ class PipelineBuilder {
         self.vertexDescriptor = vertexDescriptor
     }
     
-    func BuildPipeline(vsEntry: String, fsEntry: String, depthEnabled: Bool = true) -> MTLRenderPipelineState {
-        
+    func buildPipeline(vsEntry: String, fsEntry: String, depthEnabled: Bool = true) throws -> MTLRenderPipelineState? {
         let pipelineDescriptor = MTLRenderPipelineDescriptor()
         pipelineDescriptor.vertexFunction = library.makeFunction(name: vsEntry)
         pipelineDescriptor.fragmentFunction = library.makeFunction(name: fsEntry)
@@ -41,11 +40,6 @@ class PipelineBuilder {
         if depthEnabled {
             pipelineDescriptor.depthAttachmentPixelFormat = .depth32Float
         }
-        
-        do {
-            return try device.makeRenderPipelineState(descriptor: pipelineDescriptor)
-        } catch {
-            fatalError()
-        }
+        return try device.makeRenderPipelineState(descriptor: pipelineDescriptor)
     }
 }

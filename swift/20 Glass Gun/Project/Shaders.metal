@@ -101,7 +101,7 @@ fragment float4 fragmentShader(
     //spotlight
     color += applySpotLight(input.fragmentPosition, input.normal, spotlight, baseColor, fragCam);
     
-    for (uint i = 0; i < fragUBO.lightCount; ++i) {
+    for (int i = 0; i < fragUBO.lightCount; ++i) {
         color += applyPointLight(input.fragmentPosition, input.normal, pointLights[i], baseColor, fragCam);
     }
     

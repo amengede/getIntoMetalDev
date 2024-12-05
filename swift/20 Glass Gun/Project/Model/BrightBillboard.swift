@@ -1,5 +1,5 @@
 //
-//  brightBillboard.swift
+//  BrightBillboard.swift
 //  Project
 //
 //  Created by Andrew Mengede on 4/8/2022.
@@ -22,22 +22,20 @@ class BrightBillboard: Billboard {
         self.pathRadius = pathRadius
         self.pathPhi = pathPhi
         self.angularVelocity = angularVelocity
-        super.init(position: position, id: id, color: color);
+        super.init(position: position, id: id, color: color)
         
     }
     
     override func update(viewerPosition: simd_float3) {
         
-        position[0] = rotationCenter[0] + pathRadius * cos(t) * sin(pathPhi * .pi / 180.0);
-        position[1] = rotationCenter[1] + pathRadius * sin(t) * sin(pathPhi * .pi / 180.0);
-        position[2] = rotationCenter[2] + pathRadius * cos(pathPhi * .pi / 180.0);
+        position[0] = rotationCenter[0] + pathRadius * cos(t) * sin(pathPhi.degreesToRadians())
+        position[1] = rotationCenter[1] + pathRadius * sin(t) * sin(pathPhi.degreesToRadians())
+        position[2] = rotationCenter[2] + pathRadius * cos(pathPhi.degreesToRadians())
         
-        t += angularVelocity * 0.1;
-        if t > (2.0 * .pi) {
-            t -= 2.0 * .pi;
-        }
+        t += angularVelocity * 0.1
+        t = t.truncatingRemainder(dividingBy: 2.0 * .pi)
         
-        super.update(viewerPosition: viewerPosition);
+        super.update(viewerPosition: viewerPosition)
     }
     
 }
