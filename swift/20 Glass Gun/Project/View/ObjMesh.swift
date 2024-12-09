@@ -1,5 +1,5 @@
 //
-//  objMesh.swift
+//  ObjMesh.swift
 //  metal5
 //
 //  Created by Andrew Mengede on 6/1/22.
@@ -14,47 +14,44 @@ class ObjMesh {
     var normals: [simd_float3] = []
     var cursor: Int
     
-    init(filename: String) {
+    init?(filename: String) {
         guard let meshURL = Bundle.main.url(forResource: filename, withExtension: "obj") else {
-            fatalError()
+            print("[Error] failed to create mesh URL")
+            return nil
         }
         
         do {
-            let raw_contents: String = try String.init(contentsOf: meshURL);
-            let lines: [String] = raw_contents.components(separatedBy: "\n");
+            let raw_contents: String = try String(contentsOf: meshURL, encoding: .utf8)
+            let lines = raw_contents.components(separatedBy: "\n")
             
-            cursor = 0;
-            while (cursor < lines.count) {
-                let line: String = lines[cursor];
-                let components: [String] = line.components(separatedBy: " ")
+            cursor = 0
+            while cursor < lines.count {
+                let line = lines[cursor]
+                let components = line.components(separatedBy: " ")
                 
-                switch (components[0]) {
+                switch components[0] {
                 case "v":
                     //add vertex to vertices set
-                    read_vertex_data(components: components);
-                    break;
+                    read_vertex_data(components: components)
                 case "vt":
                     //add texture coords to texcoords set
-                    read_texcoord_data(components: components);
-                    break;
+                    read_texcoord_data(components: components)
                 case "vn":
                     //add normal to normals set
-                    read_normal_data(components: components);
-                    break;
+                    read_normal_data(components: components)
                 case "f":
                     //add face data
-                    read_face_data(components: components);
-                    break;
+                    read_face_data(components: components)
                 default:
-                    break;
+                    break
                 }
-                
-                cursor += 1;
+                cursor += 1
             }
             
         }
         catch {
-            fatalError("Couldn't load \(filename)")
+            print("Couldn't load \(filename)")
+            return nil
         }
     }
     
@@ -65,7 +62,7 @@ class ObjMesh {
                 Float(components[2])!,
                 Float(components[3])!
             )
-        );
+        )
     }
     
     func read_texcoord_data(components: [String]) {
@@ -74,7 +71,7 @@ class ObjMesh {
                 Float(components[1])!,
                 Float(components[2])!
             )
-        );
+        )
     }
     
     func read_normal_data(components: [String]) {
@@ -84,7 +81,7 @@ class ObjMesh {
                 Float(components[2])!,
                 Float(components[3])!
             )
-        );
+        )
     }
     
     func read_face_data(components: [String]) {

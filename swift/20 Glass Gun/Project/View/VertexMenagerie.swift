@@ -1,5 +1,5 @@
 //
-//  vertexMenagerie.swift
+//  VertexMenagerie.swift
 //  Project
 //
 //  Created by Andrew Mengede on 11/10/2022.
@@ -7,7 +7,7 @@
 
 import MetalKit
 
-class vertexMenagerie {
+class VertexMenagerie {
     
     var offset: Int32 = 0
     var firstVertices: [Int32:Int32] = [:]

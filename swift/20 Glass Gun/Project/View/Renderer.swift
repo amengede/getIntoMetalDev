@@ -20,7 +20,7 @@ class Renderer: NSObject, MTKViewDelegate {
     
     var scene: GameScene
     
-    let menagerie: vertexMenagerie
+    let menagerie = VertexMenagerie()
     let materialLump: MaterialLump
     let cubemap: CubemapMaterial
     
@@ -28,7 +28,7 @@ class Renderer: NSObject, MTKViewDelegate {
     let gunLayer: RenderPass
     let screenQuad: ScreenQuad
     
-    init(_ parent: ContentView, scene: GameScene) {
+    init?(_ parent: ContentView, scene: GameScene) {
         
         self.parent = parent
         if let metalDevice = MTLCreateSystemDefaultDevice() {
@@ -46,11 +46,14 @@ class Renderer: NSObject, MTKViewDelegate {
             OBJECT_TYPE_POINT_LIGHT: "light",
             OBJECT_TYPE_GUN: "gun",
         ]
-        menagerie = vertexMenagerie();
+        
         for (objectType, modelName) in modelInfo {
-            menagerie.consume(mesh: ObjMesh(filename: modelName), meshType: objectType);
+            guard let mesh = ObjMesh(filename: modelName) else {
+                continue
+            }
+            menagerie.consume(mesh: mesh, meshType: objectType)
         }
-        menagerie.finalize(device: metalDevice);
+        menagerie.finalize(device: metalDevice)
         
         let materialInfo: [Int32: String] = [
             OBJECT_TYPE_CUBE: "arty",
@@ -59,8 +62,12 @@ class Renderer: NSObject, MTKViewDelegate {
             OBJECT_TYPE_POINT_LIGHT: "star",
             OBJECT_TYPE_GUN: "gun0"
         ]
-        materialLump = MaterialLump(device: metalDevice, allocator: materialLoader,
-                                    layerCount: materialInfo.count, queue: metalCommandQueue, format: .bgra8Unorm);
+        guard let materialLump = MaterialLump(device: metalDevice, allocator: materialLoader,
+                                              layerCount: materialInfo.count, queue: metalCommandQueue, format: .bgra8Unorm) else {
+            print("[Error] failed to create renderer because of materialLump error")
+            return nil
+        }
+        self.materialLump = materialLump
         for (objectType, filename) in materialInfo {
             materialLump.consume(filename: filename, layer: objectType)
         }
@@ -82,30 +89,42 @@ class Renderer: NSObject, MTKViewDelegate {
         
         
         guard let library: MTLLibrary = metalDevice.makeDefaultLibrary() else {
-            fatalError()
+            print("[Error] failed to create library")
+            return nil
         }
-        pipelines = [:];
-        let pipelineBuilder = PipelineBuilder(device: metalDevice, library: library)
-        pipelineBuilder.setVertexDescriptor(vertexDescriptor: menagerie.getVertexDescriptor())
-        pipelines[PIPELINE_TYPE_LIT] = pipelineBuilder.BuildPipeline(
-            vsEntry: "vertexShader", fsEntry: "fragmentShader")
-        pipelines[PIPELINE_TYPE_GUN] = pipelineBuilder.BuildPipeline(
-            vsEntry: "vertexShaderGun", fsEntry: "fragmentShaderGun")
-        pipelines[PIPELINE_TYPE_EMISSIVE] = pipelineBuilder.BuildPipeline(
-            vsEntry: "vertexShaderUnlit", fsEntry: "fragmentShaderUnlit")
+        pipelines = [:]
+        do {
+            let pipelineBuilder = PipelineBuilder(device: metalDevice, library: library)
+            pipelineBuilder.setVertexDescriptor(vertexDescriptor: menagerie.getVertexDescriptor())
+            pipelines[PIPELINE_TYPE_LIT] = try pipelineBuilder.buildPipeline(
+                vsEntry: "vertexShader", fsEntry: "fragmentShader")
+            pipelines[PIPELINE_TYPE_GUN] = try pipelineBuilder.buildPipeline(
+                vsEntry: "vertexShaderGun", fsEntry: "fragmentShaderGun")
+            pipelines[PIPELINE_TYPE_EMISSIVE] = try pipelineBuilder.buildPipeline(
+                vsEntry: "vertexShaderUnlit", fsEntry: "fragmentShaderUnlit")
+            
+            screenQuad = ScreenQuad(device: metalDevice)
+            pipelineBuilder.setVertexDescriptor(vertexDescriptor: screenQuad.getVertexDescriptor())
+            pipelines[PIPELINE_TYPE_POST] = try pipelineBuilder.buildPipeline(
+                vsEntry: "vertexShaderPost", fsEntry: "fragmentShaderPost", depthEnabled: false)
+            
+            pipelines[PIPELINE_TYPE_SKY] = try pipelineBuilder.buildPipeline(
+                vsEntry: "vertexShaderSky", fsEntry: "fragmentShaderSky")
+        } catch {
+            print("[Error] pipeline build error: \(error)")
+            return nil
+        }
+        guard let worldLayer = RenderPass(device: metalDevice,
+                                          width: 640, height: 480) else {
+            return nil
+        }
+        self.worldLayer = worldLayer
         
-        screenQuad = ScreenQuad(device: metalDevice)
-        pipelineBuilder.setVertexDescriptor(vertexDescriptor: screenQuad.getVertexDescriptor())
-        pipelines[PIPELINE_TYPE_POST] = pipelineBuilder.BuildPipeline(
-            vsEntry: "vertexShaderPost", fsEntry: "fragmentShaderPost", depthEnabled: false)
-        
-        pipelines[PIPELINE_TYPE_SKY] = pipelineBuilder.BuildPipeline(
-            vsEntry: "vertexShaderSky", fsEntry: "fragmentShaderSky")
-        
-        worldLayer = RenderPass(device: metalDevice,
-                                      width: 640, height: 480)
-        gunLayer = RenderPass(device: metalDevice,
-                                      width: 640, height: 480)
+        guard let gunLayer = RenderPass(device: metalDevice,
+                                        width: 640, height: 480) else {
+            return nil
+        }
+        self.gunLayer = gunLayer
         
         self.scene = scene
         
@@ -118,7 +137,7 @@ class Renderer: NSObject, MTKViewDelegate {
     func draw(in view: MTKView) {
         
         //update
-        scene.update();
+        scene.update()
         
         guard let drawable = view.currentDrawable else {
             return
@@ -151,14 +170,14 @@ class Renderer: NSObject, MTKViewDelegate {
     }
     
     func drawSky(renderEncoder: MTLRenderCommandEncoder?) {
-        
-        renderEncoder?.setRenderPipelineState(pipelines[PIPELINE_TYPE_SKY]!)
-        renderEncoder?.setVertexBuffer(screenQuad.vertexBuffer, offset: 0, index: 0)
-        renderEncoder?.setFragmentTexture(cubemap.texture, index: 0)
-        renderEncoder?.setFragmentSamplerState(cubemap.sampler, index: 0)
-        
-        let dy: Float32 = tan(.pi / 8);
-        let dx: Float32 = 0.5 * dy * 800/600;
+        if let state = pipelines[PIPELINE_TYPE_SKY] {
+            renderEncoder?.setRenderPipelineState(state)
+            renderEncoder?.setVertexBuffer(screenQuad.vertexBuffer, offset: 0, index: 0)
+            renderEncoder?.setFragmentTexture(cubemap.texture, index: 0)
+            renderEncoder?.setFragmentSamplerState(cubemap.sampler, index: 0)
+        }
+        let dy: Float32 = tan(.pi / 8)
+        let dx: Float32 = 0.5 * dy * 800/600
         
         var cameraFrame: CameraFrame = CameraFrame(
             forwards: scene.player.forwards,
@@ -180,21 +199,21 @@ class Renderer: NSObject, MTKViewDelegate {
         renderEncoder?.setVertexBuffer(menagerie.vertexBuffer, offset: 0, index: 0)
         renderEncoder?.setFragmentTexture(materialLump.texture, index: 0)
         renderEncoder?.setFragmentSamplerState(materialLump.sampler, index: 0)
-        renderEncoder?.setVertexBuffer(prepare_scene(), offset: 0, index: 1);
+        renderEncoder?.setVertexBuffer(prepareScene(), offset: 0, index: 1)
         
         sendCameraData(renderEncoder: renderEncoder)
         
         sendLightData(renderEncoder: renderEncoder)
         
-        draw(renderEncoder: renderEncoder, meshType: OBJECT_TYPE_CUBE);
+        draw(renderEncoder: renderEncoder, meshType: OBJECT_TYPE_CUBE)
         
-        draw(renderEncoder: renderEncoder, meshType: OBJECT_TYPE_GROUND);
+        draw(renderEncoder: renderEncoder, meshType: OBJECT_TYPE_GROUND)
         
-        draw(renderEncoder: renderEncoder, meshType: OBJECT_TYPE_MOUSE);
+        draw(renderEncoder: renderEncoder, meshType: OBJECT_TYPE_MOUSE)
         
     }
     
-    func prepare_scene() -> MTLBuffer {
+    func prepareScene() -> MTLBuffer? {
         
         var payloads: [InstancePayload] = []
         
@@ -230,14 +249,14 @@ class Renderer: NSObject, MTKViewDelegate {
         )
 
         free(memory)
-        return buffer!
+        return buffer
     }
     
     func sendCameraData(renderEncoder: MTLRenderCommandEncoder?) {
         
         var cameraData: CameraParameters = CameraParameters()
         cameraData.view = scene.player.get_view_transform()
-        cameraData.projection = Matrix44.create_perspective_projection(
+        cameraData.projection = Matrix44.perspectiveProjection(
             fovy: 45, aspect: 800/600, near: 0.1, far: 20
         )
         renderEncoder?.setVertexBytes(&cameraData, length: MemoryLayout<CameraParameters>.stride, index: 2)
@@ -273,21 +292,27 @@ class Renderer: NSObject, MTKViewDelegate {
         
         renderEncoder?.setRenderPipelineState(pipelines[PIPELINE_TYPE_EMISSIVE]!)
         
-        draw(renderEncoder: renderEncoder, meshType: OBJECT_TYPE_POINT_LIGHT);
+        draw(renderEncoder: renderEncoder, meshType: OBJECT_TYPE_POINT_LIGHT)
         
     }
     
     func draw(
         renderEncoder: MTLRenderCommandEncoder?,
         meshType: Int32) {
-        
-        renderEncoder?.drawPrimitives(
+        guard let vertexStart = menagerie.firstVertices[meshType],
+              let vertexCount = menagerie.vertexCounts[meshType],
+              let instanceCount = scene.instanceCounts[meshType],
+              let baseInstance = scene.firstInstances[meshType],
+              let renderEncoder else {
+            return
+        }
+        renderEncoder.drawPrimitives(
             type: .triangle,
-            vertexStart: Int(menagerie.firstVertices[meshType]!),
-            vertexCount: Int(menagerie.vertexCounts[meshType]!),
-            instanceCount: scene.instanceCounts[meshType]!,
-            baseInstance: scene.firstInstances[meshType]!);
-        
+            vertexStart: Int(vertexStart),
+            vertexCount: Int(vertexCount),
+            instanceCount: instanceCount,
+            baseInstance: baseInstance
+        )
     }
     
     func drawGun(commandBuffer: MTLCommandBuffer) {
@@ -306,35 +331,40 @@ class Renderer: NSObject, MTKViewDelegate {
             [0.1, 0, 0, 0],
             [0, 0.1, 0, 0],
             [0, 0, 0.1, 0],
-            [0, 0, 0, 1]);
+            [0, 0, 0, 1])
         
-        let pitch = Matrix44.create_from_rotation(eulers: [90 - scene.player.eulers[1], 0, 0]);
+        let pitch = Matrix44.from(rotation: [90 - scene.player.eulers[1], 0, 0])
         
-        let yaw = Matrix44.create_from_rotation(eulers: [0, 0, 90 + scene.player.eulers[2]]);
+        let yaw = Matrix44.from(rotation: [0, 0, 90 + scene.player.eulers[2]])
         
-        let translation = Matrix44.create_from_translation(translation:
-            scene.player.position + scene.player.forwards - 0.1 * scene.player.right - 0.4 * scene.player.up);
+        let translation = Matrix44.from(translation:
+            scene.player.position + scene.player.forwards - 0.1 * scene.player.right - 0.4 * scene.player.up)
         
-        var model = translation * yaw * pitch * scale;
-        renderEncoder?.setVertexBytes(&model, length: MemoryLayout<float4x4>.stride, index: 1);
+        var model = translation * yaw * pitch * scale
+        renderEncoder?.setVertexBytes(&model, length: MemoryLayout<float4x4>.stride, index: 1)
         
-        renderEncoder?.drawPrimitives(type: .triangle,
-                                      vertexStart: Int(menagerie.firstVertices[OBJECT_TYPE_GUN]!),
-                                      vertexCount: Int(menagerie.vertexCounts[OBJECT_TYPE_GUN]!))
-        
+        if let start = menagerie.firstVertices[OBJECT_TYPE_GUN],
+           let count = menagerie.vertexCounts[OBJECT_TYPE_GUN] {
+            renderEncoder?.drawPrimitives(type: .triangle,
+                                          vertexStart: Int(start),
+                                          vertexCount: Int(count))
+        }
         renderEncoder?.endEncoding()
     }
     
     func drawScreen(commandBuffer: MTLCommandBuffer, view: MTKView) {
         
-        let renderPassDescriptor = view.currentRenderPassDescriptor
-        renderPassDescriptor?.colorAttachments[0].loadAction = .clear
-        renderPassDescriptor?.colorAttachments[0].storeAction = .store
+        guard let renderPassDescriptor = view.currentRenderPassDescriptor,
+              let postPipeline = pipelines[PIPELINE_TYPE_POST] else {
+            return
+        }
+        renderPassDescriptor.colorAttachments[0].loadAction = .clear
+        renderPassDescriptor.colorAttachments[0].storeAction = .store
         
-        let renderEncoder = commandBuffer.makeRenderCommandEncoder(descriptor: renderPassDescriptor!)
+        let renderEncoder = commandBuffer.makeRenderCommandEncoder(descriptor: renderPassDescriptor)
         
         // World
-        renderEncoder?.setRenderPipelineState(pipelines[PIPELINE_TYPE_POST]!)
+        renderEncoder?.setRenderPipelineState(postPipeline)
         renderEncoder?.setFragmentTexture(worldLayer.colorBuffer, index: 0)
         renderEncoder?.setFragmentSamplerState(worldLayer.colorBufferSampler, index: 0)
         renderEncoder?.setVertexBuffer(screenQuad.vertexBuffer, offset: 0, index: 0)

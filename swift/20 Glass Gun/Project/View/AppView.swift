@@ -1,5 +1,5 @@
 //
-//  appView.swift
+//  AppView.swift
 //  Transformations
 //
 //  Created by Andrew Mengede on 2/3/2022.
@@ -10,7 +10,7 @@ import SwiftUI
 /*
  game scene will be automatically forwarded here...
  */
-struct appView: View {
+struct AppView: View {
     
     @EnvironmentObject var gameScene: GameScene
     @FocusState private var isFocused: Bool
@@ -55,6 +55,6 @@ struct appView: View {
  */
 struct appView_Previews: PreviewProvider {
     static var previews: some View {
-        appView().environmentObject(GameScene())
+        AppView().environmentObject(GameScene())
     }
 }

@@ -1,5 +1,5 @@
 //
-//  Scene.swift
+//  GameScene.swift
 //  Transformations
 //
 //  Created by Andrew Mengede on 2/3/2022.
@@ -8,7 +8,7 @@
 import Foundation
 import SwiftUI
 
-class GameScene : ObservableObject {
+class GameScene: ObservableObject {
     
     @Published var player: Camera
     @Published var renderables: [Int32:[Entity]]
@@ -29,19 +29,19 @@ class GameScene : ObservableObject {
         cubes = []
         pointLights = []
         mouseDelta = Point2D(x: 0.0, y: 0.0)
-        renderables = [:];
-        firstInstances = [:];
-        instanceCounts = [:];
-        //firstInstancesFlat = [];
+        renderables = [:]
+        firstInstances = [:]
+        instanceCounts = [:]
+        //firstInstancesFlat = []
         
-        player = Camera(position: [-6.0, 6.0, 4.0], eulers: [0.0, -15.0, -45.0], id: OBJECT_TYPE_PLAYER);
+        player = Camera(position: [-6.0, 6.0, 4.0], eulers: [0.0, -15.0, -45.0], id: OBJECT_TYPE_PLAYER)
         
         mouse = Billboard(
-            position: [0.0, 0.0, 2.7], id: OBJECT_TYPE_MOUSE, color: simd_float3(repeating: 1.0));
+            position: [0.0, 0.0, 2.7], id: OBJECT_TYPE_MOUSE, color: simd_float3(repeating: 1.0))
         
         let newSpotlight = Light(color: [1.0, 0.0, 0.0])
         newSpotlight.declareSpotlight(position: [-2, 0.0, 3.0], eulers: [0.0, 0.0, 180.0], eulerVelocity: [0.0, 0.0, 45.0])
-        spotlight = newSpotlight;
+        spotlight = newSpotlight
         
         let newSun = Light(color: [1.0, 1.0, 0.0])
         newSun.declareDirectional(eulers: [0.0, 135.0, 45.0])
@@ -64,47 +64,29 @@ class GameScene : ObservableObject {
             }
         }
         
-        pointLights.append(BrightBillboard(position: [0.0, 0.0, 1.0], color: [0.0, 1.0, 1.0], rotation_center: [0.0, 0.0, 1.0], pathRadius: 2.0, pathPhi: 60.0, angularVelocity: 1.0, id: OBJECT_TYPE_POINT_LIGHT));
-        pointLights.append(BrightBillboard(position: [0.0, 0.0, 1.0], color: [0.0, 0.0, 1.0], rotation_center: [0.0, 0.0, 1.0], pathRadius: 3.0, pathPhi: 0.0, angularVelocity: 2.0, id: OBJECT_TYPE_POINT_LIGHT));
+        pointLights.append(BrightBillboard(position: [0.0, 0.0, 1.0], color: [0.0, 1.0, 1.0], rotation_center: [0.0, 0.0, 1.0], pathRadius: 2.0, pathPhi: 60.0, angularVelocity: 1.0, id: OBJECT_TYPE_POINT_LIGHT))
+        pointLights.append(BrightBillboard(position: [0.0, 0.0, 1.0], color: [0.0, 0.0, 1.0], rotation_center: [0.0, 0.0, 1.0], pathRadius: 3.0, pathPhi: 0.0, angularVelocity: 2.0, id: OBJECT_TYPE_POINT_LIGHT))
         
-        capture_renderables();
+        captureRenderables()
         
     }
     
-    func capture_renderables() {
-        
-        var offset = 0;
-        
-        renderables[OBJECT_TYPE_CUBE] = [];
-        firstInstances[OBJECT_TYPE_CUBE] = offset;
-        for cube in cubes {
-            renderables[OBJECT_TYPE_CUBE]?.append(cube);
-        }
-        instanceCounts[OBJECT_TYPE_CUBE] = renderables[OBJECT_TYPE_CUBE]?.count;
-        offset += instanceCounts[OBJECT_TYPE_CUBE]!;
-        
-        renderables[OBJECT_TYPE_GROUND] = [];
-        firstInstances[OBJECT_TYPE_GROUND] = offset;
-        for tile in groundTiles {
-            renderables[OBJECT_TYPE_GROUND]?.append(tile);
-        }
-        instanceCounts[OBJECT_TYPE_GROUND] = renderables[OBJECT_TYPE_GROUND]?.count;
-        offset += instanceCounts[OBJECT_TYPE_GROUND]!;
-        
-        renderables[OBJECT_TYPE_MOUSE] = [mouse];
-        firstInstances[OBJECT_TYPE_MOUSE] = offset;
-        instanceCounts[OBJECT_TYPE_MOUSE] = renderables[OBJECT_TYPE_MOUSE]?.count;
-        offset += instanceCounts[OBJECT_TYPE_MOUSE]!;
-        
-        renderables[OBJECT_TYPE_POINT_LIGHT] = [];
-        firstInstances[OBJECT_TYPE_POINT_LIGHT] = offset;
-        for light in pointLights {
-            renderables[OBJECT_TYPE_POINT_LIGHT]?.append(light);
-        }
-        instanceCounts[OBJECT_TYPE_POINT_LIGHT] = renderables[OBJECT_TYPE_POINT_LIGHT]?.count;
-        offset += instanceCounts[OBJECT_TYPE_POINT_LIGHT]!;
-        
-        //firstInstancesFlat = firstInstances.sorted(by: { $0.0 < $1.0 });
+    private func captureRenderables() {
+        var offset = 0
+        captureRenderable(key: OBJECT_TYPE_CUBE, entities: cubes, offset: &offset)
+        captureRenderable(key: OBJECT_TYPE_GROUND, entities: groundTiles, offset: &offset)
+        captureRenderable(key: OBJECT_TYPE_MOUSE, entities: [mouse], offset: &offset)
+        captureRenderable(key: OBJECT_TYPE_POINT_LIGHT, entities: pointLights, offset: &offset)        
+        //firstInstancesFlat = firstInstances.sorted(by: { $0.0 < $1.0 })
+    }
+    
+    private func captureRenderable(key: Int32, entities: [Entity], offset: inout Int) {
+        renderables[key] = []
+        firstInstances[key] = offset
+        renderables[key]?.append(contentsOf: entities)
+        let count = renderables[key]?.count ?? 0
+        instanceCounts[key] = count
+        offset += count
     }
     
     func updateView() {
@@ -112,21 +94,21 @@ class GameScene : ObservableObject {
     }
     
     func update() {
-        
-        var movement: simd_float2 = [0.0, 0.0];
+        let speed: Float = 0.1
+        var movement: simd_float2 = [0.0, 0.0]
         if InputController.controller.keysPressed.contains(.keyW) {
-            movement[0] += 0.1;
+            movement[0] += speed
         }
         else if InputController.controller.keysPressed.contains(.keyA) {
-            movement[1] += 0.1;
+            movement[1] += speed
         }
         else if InputController.controller.keysPressed.contains(.keyS) {
-            movement[0] -= 0.1;
+            movement[0] -= speed
         }
         else if InputController.controller.keysPressed.contains(.keyD) {
-            movement[1] -= 0.1;
+            movement[1] -= speed
         }
-        player.move(amount: movement);
+        player.move(amount: movement)
                 
         let newMouseDelta: Point2D = InputController.controller.mouseDelta
         if (
