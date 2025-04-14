@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		3BC9198D2AF69BCD006A018C /* private.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3BC9198C2AF69BCD006A018C /* private.cpp */; };
 		7650266F2AD2657900E44B72 /* app_delegate.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 76A09A292AB46683003FD92C /* app_delegate.cpp */; };
 		765026702AD2657D00E44B72 /* view_delegate.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 76A09A2C2AB46683003FD92C /* view_delegate.cpp */; };
 		76A099A92AB452E0003FD92C /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 76A099A82AB452E0003FD92C /* main.cpp */; };
@@ -29,6 +30,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		3BC9198C2AF69BCD006A018C /* private.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = private.cpp; sourceTree = "<group>"; };
+		3BC9198E2AF69F29006A018C /* release.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = release.h; sourceTree = "<group>"; };
 		76A099A52AB452E0003FD92C /* hello_metal_cpp */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = hello_metal_cpp; sourceTree = BUILT_PRODUCTS_DIR; };
 		76A099A82AB452E0003FD92C /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
 		76A099B02AB4542B003FD92C /* MetalKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MetalKit.framework; path = System/Library/Frameworks/MetalKit.framework; sourceTree = SDKROOT; };
@@ -80,6 +83,8 @@
 				76A09A282AB46683003FD92C /* control */,
 				76A09A232AB465CE003FD92C /* view */,
 				76A099A82AB452E0003FD92C /* main.cpp */,
+				3BC9198E2AF69F29006A018C /* release.h */,
+				3BC9198C2AF69BCD006A018C /* private.cpp */,
 				76A09A222AB46548003FD92C /* config.h */,
 			);
 			path = hello_metal_cpp;
@@ -175,6 +180,7 @@
 				765026702AD2657D00E44B72 /* view_delegate.cpp in Sources */,
 				7650266F2AD2657900E44B72 /* app_delegate.cpp in Sources */,
 				76A09A262AB46630003FD92C /* renderer.cpp in Sources */,
+				3BC9198D2AF69BCD006A018C /* private.cpp in Sources */,
 				76A099A92AB452E0003FD92C /* main.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
