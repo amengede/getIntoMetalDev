@@ -1,0 +1,20 @@
+@startuml mesh
+package view {
+
+class Mesh {
+    + void setVertexBuffer(MTL::Buffer* vertexBuffer);
+    + void setIndexCount(NS::UInteger indexCount);
+    + void setIndexBuffer(MTL::Buffer* indexBuffer);
+    + void setTexture(MTL::Texture* texture);
+    + void setSampler(MTL::SamplerState* sampler);
+    + void draw(MTL::RenderCommandEncoder* encoder);
+    + void release();
+
+    - MTL::Buffer* vertexBuffer;
+    - MTL::Buffer* indexBuffer;
+    - MTL::Texture* texture;
+    - MTL::SamplerState* sampler;
+    - NS::UInteger indexCount;
+}
+}
+@enduml

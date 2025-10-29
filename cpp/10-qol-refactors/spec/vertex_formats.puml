@@ -1,0 +1,21 @@
+@startuml vertex_formats
+package Vertex_Formats {
+
+class Vertex {
+    + Vertex(float data[6]);
+
+    {static} MTL::VertexDescriptor* getDescriptor();
+    
+    - float data[6];
+}
+
+class TexturedVertex {
+
+    + TexturedVertex(float data[8]);
+
+    {static} MTL::VertexDescriptor* getDescriptor();
+
+    - float data[8];
+}
+}
+@enduml

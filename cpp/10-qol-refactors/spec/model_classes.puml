@@ -1,0 +1,24 @@
+@startuml model_classes
+package model {
+    class Camera {
+        + void setPosition(simd::float3 pos);
+
+        + void setAngles(float pitch, float yaw);
+
+        + void walk(simd::float3 dPos);
+
+        + void spin(float dPitch, float dYaw);
+
+        + simd::float4x4 getViewTransform();
+
+        - void updateVectors();
+
+        - simd::float3 position;
+        - float pitch;
+        - float yaw;
+        - simd::float3 right;
+        - simd::float3 up;
+        - simd::float3 forwards;
+    }
+}
+@enduml
