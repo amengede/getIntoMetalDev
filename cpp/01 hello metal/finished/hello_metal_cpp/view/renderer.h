@@ -4,18 +4,19 @@
 //
 //  Created by Andrew Mengede on 15/9/2023.
 //
-
 #pragma once
+
 #include "../config.h"
+#include "../release.h"
 
 class Renderer
 {
     public:
-        Renderer(MTL::Device* device);
-        ~Renderer();
+        explicit Renderer(MTL::Device* device);
+
         void draw(MTK::View* view);
 
     private:
-        MTL::Device* device;
-        MTL::CommandQueue* commandQueue;
+        const release_ptr<MTL::Device> device;
+        const release_ptr<MTL::CommandQueue> commandQueue;
 };
